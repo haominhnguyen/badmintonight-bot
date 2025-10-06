@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>🏸 Chi tiết Session - Badmintonight Mỹ Đình</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 16px;
+      padding-top: max(16px, env(safe-area-inset-top));
+      padding-bottom: max(16px, env(safe-area-inset-bottom));
+      padding-left: max(16px, env(safe-area-inset-left));
+      padding-right: max(16px, env(safe-area-inset-right));
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      color: white;
+      font-size: 2.5em;
+      margin: 0;
+    }
+
+    .back-btn {
+      background: white;
+      color: #667eea;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 25px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+      background: #f8f9fa;
+      transform: translateY(-2px);
+    }
+
+    .session-card {
+      background: white;
+      border-radius: 20px;
+      padding: 0;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+      overflow: hidden;
+      margin-bottom: 30px;
+      border: 2px solid transparent;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    .session-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+      z-index: 1;
+    }
+
+    .session-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 25px 70px rgba(102, 126, 234, 0.2);
+      border-color: #667eea;
+    }
+
+    .session-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .session-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .session-title {
+      font-size: 2em;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .session-date {
+      font-size: 1.2em;
+      opacity: 0.9;
+    }
+
+    .session-status {
+      display: inline-block;
+      padding: 8px 20px;
+      border-radius: 25px;
+      font-weight: 600;
+      margin-top: 15px;
+      font-size: 0.9em;
+    }
+
+    .session-status.completed {
+      background: rgba(255,255,255,0.2);
+      color: white;
+    }
+
+    .session-status.pending {
+      background: rgba(255,193,7,0.2);
+      color: #ffc107;
+    }
+
+    .session-body {
+      padding: 40px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .stat-card {
+      background: #f8f9fa;
+      padding: 25px;
+      border-radius: 15px;
+      text-align: center;
+      border-left: 5px solid #667eea;
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.1);
+    }
+
+    .stat-card h3 {
+      color: #667eea;
+      font-size: 0.9em;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+
+    .stat-card .value {
+      font-size: 2.5em;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 5px;
+    }
+
+    .stat-card .label {
+      color: #666;
+      font-size: 0.9em;
+    }
+
+    .section {
+      margin-bottom: 40px;
+    }
+
+    .section h2 {
+      color: #333;
+      font-size: 1.8em;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 3px solid #667eea;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .participants-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .participant-card {
+      background: white;
+      border: 2px solid #e9ecef;
+      border-radius: 15px;
+      padding: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .participant-card:hover {
+      border-color: #667eea;
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.1);
+      transform: translateY(-5px);
+    }
+
+    .participant-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .participant-avatar {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5em;
+      font-weight: bold;
+    }
+
+    .participant-info h3 {
+      margin: 0;
+      color: #333;
+      font-size: 1.2em;
+    }
+
+    .participant-info p {
+      margin: 5px 0 0 0;
+      color: #666;
+      font-size: 0.9em;
+    }
+
+    .participant-amount {
+      text-align: right;
+      font-size: 1.3em;
+      font-weight: bold;
+      color: #667eea;
+    }
+
+    .payments-list {
+      background: #f8f9fa;
+      border-radius: 15px;
+      padding: 20px;
+    }
+
+    .payment-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      background: white;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #e9ecef;
+      transition: all 0.3s ease;
+    }
+
+    .payment-item:hover {
+      border-color: #667eea;
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
+    }
+
+    .payment-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .payment-name {
+      font-weight: 600;
+      color: #333;
+      font-size: 1.1em;
+    }
+
+    .payment-amount {
+      font-weight: bold;
+      color: #333;
+      font-size: 1.2em;
+    }
+
+    .payment-status {
+      padding: 6px 15px;
+      border-radius: 20px;
+      font-size: 0.85em;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .payment-status.paid {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .payment-status.unpaid {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .payment-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .payment-date {
+      font-size: 0.8em;
+      color: #28a745;
+      font-style: italic;
+    }
+
+    .payment-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .mark-paid-btn {
+      background: #28a745;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.85em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .mark-paid-btn:hover {
+      background: #218838;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    }
+
+    .mark-paid-btn:active {
+      transform: translateY(0);
+    }
+
+    .loading {
+      text-align: center;
+      padding: 60px;
+      color: white;
+      font-size: 1.2em;
+    }
+
+    .error {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px 0;
+      border-left: 5px solid #dc3545;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px;
+      color: #666;
+      font-style: italic;
+    }
+
+    .summary-stats {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px;
+      border-radius: 20px;
+      margin-bottom: 30px;
+    }
+
+    .summary-stats h3 {
+      margin: 0 0 20px 0;
+      font-size: 1.5em;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 20px;
+    }
+
+    .summary-item {
+      text-align: center;
+    }
+
+    .summary-value {
+      font-size: 2em;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .summary-label {
+      font-size: 0.9em;
+      opacity: 0.9;
+    }
+
+    /* iPhone 11 Pro (375px) to iPhone 17 Pro Max (1320px) */
+    @media (max-width: 1320px) {
+      .container {
+        padding: 15px;
+      }
+      
+      .header h1 {
+        font-size: 2.2em;
+      }
+      
+      .back-btn {
+        padding: 10px 20px;
+        font-size: 0.9em;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .header h1 {
+        font-size: 2em;
+      }
+      
+      .session-title {
+        font-size: 1.8em;
+      }
+      
+      .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+      }
+      
+      .summary-value {
+        font-size: 1.8em;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 1.8em;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+      }
+
+      .participants-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .session-body {
+        padding: 20px;
+      }
+      
+      .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+      
+      .summary-value {
+        font-size: 1.6em;
+      }
+      
+      .summary-label {
+        font-size: 0.8em;
+      }
+    }
+
+    /* iPhone specific optimizations */
+    @media (max-width: 428px) {
+      body {
+        padding: 12px;
+      }
+      
+      .container {
+        padding: 0;
+      }
+      
+      .header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+      
+      .header h1 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      
+      .back-btn {
+        padding: 8px 12px;
+        font-size: 0.875rem;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      
+      .session-header {
+        padding: 16px;
+      }
+      
+      .session-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin-bottom: 6px;
+        line-height: 1.4;
+      }
+      
+      .session-date {
+        font-size: 0.875rem;
+        opacity: 0.95;
+        line-height: 1.4;
+      }
+      
+      .session-status {
+        padding: 4px 12px;
+        font-size: 0.75rem;
+        margin-top: 8px;
+        font-weight: 500;
+      }
+      
+      .session-body {
+        padding: 16px;
+      }
+      
+      .summary-stats {
+        padding: 16px;
+        margin-bottom: 16px;
+        border-radius: 16px;
+      }
+      
+      .summary-stats h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 12px;
+      }
+      
+      .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+      }
+      
+      .summary-item {
+        padding: 12px;
+        text-align: center;
+      }
+      
+      .summary-value {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 4px;
+        line-height: 1.2;
+      }
+      
+      .summary-label {
+        font-size: 0.6875rem;
+        opacity: 0.9;
+        line-height: 1.3;
+      }
+      
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        margin-bottom: 20px;
+      }
+      
+      .stat-card {
+        padding: 12px;
+        border-radius: 12px;
+      }
+      
+      .stat-card h3 {
+        font-size: 0.6875rem;
+        margin-bottom: 6px;
+        font-weight: 500;
+        opacity: 0.9;
+      }
+      
+      .stat-card .value {
+        font-size: 1.375rem;
+        font-weight: 700;
+        margin-bottom: 2px;
+        line-height: 1.2;
+      }
+      
+      .stat-card .label {
+        font-size: 0.6875rem;
+        opacity: 0.85;
+      }
+      
+      .section h2 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 12px;
+        line-height: 1.4;
+      }
+      
+      .participants-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      
+      .participant-card {
+        padding: 12px;
+        border-radius: 12px;
+      }
+      
+      .participant-header {
+        gap: 12px;
+        margin-bottom: 0;
+      }
+      
+      .participant-avatar {
+        width: 36px;
+        height: 36px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        flex-shrink: 0;
+      }
+      
+      .participant-info h3 {
+        font-size: 0.9375rem;
+        font-weight: 500;
+        margin: 0;
+        line-height: 1.4;
+      }
+      
+      .participant-info p {
+        font-size: 0.75rem;
+        margin: 2px 0 0 0;
+        opacity: 0.85;
+        line-height: 1.3;
+      }
+      
+      .payments-list {
+        padding: 12px;
+        border-radius: 12px;
+      }
+      
+      .payment-item {
+        padding: 10px 12px;
+        margin-bottom: 6px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      
+      .payment-name {
+        font-size: 0.875rem;
+        font-weight: 500;
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      
+      .payment-amount {
+        font-size: 0.9375rem;
+        font-weight: 600;
+        flex-shrink: 0;
+      }
+      
+      .payment-status {
+        padding: 3px 8px;
+        font-size: 0.6875rem;
+        font-weight: 500;
+        flex-shrink: 0;
+      }
+      
+      .empty-state {
+        padding: 32px 16px;
+        font-size: 0.875rem;
+        opacity: 0.85;
+      }
+    }
+
+    /* iPhone 11 Pro Max and larger (414px+) */
+    @media (min-width: 414px) and (max-width: 428px) {
+      .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+      
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+      
+      .summary-value {
+        font-size: 1.5em;
+      }
+      
+      .stat-card .value {
+        font-size: 2em;
+      }
+    }
+
+    /* iPhone 12 Pro Max and larger (428px+) */
+    @media (min-width: 428px) and (max-width: 480px) {
+      .summary-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+      }
+      
+      .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+      }
+      
+      .participants-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+    }
+
+    /* iPhone 14 Pro Max and larger (430px+) */
+    @media (min-width: 430px) and (max-width: 600px) {
+      .summary-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+      }
+      
+      .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+      
+      .participants-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+    }
+
+    /* Landscape orientation for phones */
+    @media (max-height: 500px) and (orientation: landscape) {
+      .header {
+        flex-direction: row;
+        margin-bottom: 20px;
+      }
+      
+      .session-header {
+        padding: 15px;
+      }
+      
+      .session-body {
+        padding: 10px;
+      }
+      
+      .summary-stats {
+        padding: 15px;
+        margin-bottom: 15px;
+      }
+      
+      .summary-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+      }
+      
+      .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🏸 Chi tiết Session</h1>
+      <a href="/" class="back-btn">
+        ← Quay lại Dashboard
+      </a>
+    </div>
+
+    <div id="session-content">
+      <div class="loading">⏳ Đang tải dữ liệu...</div>
+    </div>
+  </div>
+
+  <script>
+    try {
+      // Get session ID from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const sessionId = urlParams.get('id');
+      console.log('Session ID from URL:', sessionId);
+
+      if (!sessionId) {
+        document.getElementById('session-content').innerHTML = 
+          '<div class="error">❌ Không tìm thấy ID session</div>';
+      } else {
+        console.log('Session ID found:', sessionId);
+        // Test API call first
+        fetch('/api/v1/health')
+          .then(response => {
+            console.log('Test API response status:', response.status);
+            return response.json();
+          })
+          .then(data => {
+            console.log('API test result:', data);
+            loadSessionDetails(sessionId);
+          })
+          .catch(error => {
+            console.error('API test failed:', error);
+            document.getElementById('session-content').innerHTML = 
+              '<div class="error">❌ Không thể kết nối API: ' + error.message + '</div>';
+          });
+      }
+    } catch (error) {
+      console.error('JavaScript error:', error);
+      document.getElementById('session-content').innerHTML = 
+        '<div class="error">❌ Lỗi JavaScript: ' + error.message + '</div>';
+    }
+
+    async function loadSessionDetails(sessionId) {
+      try {
+        console.log('Loading session details for ID:', sessionId);
+        const response = await fetch(`/api/v1/public/sessions/${sessionId}`);
+        console.log('Response status:', response.status);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        console.log('API result:', result);
+
+        if (!result.success) {
+          throw new Error('Failed to load session details: ' + (result.message || 'Unknown error'));
+        }
+
+        const session = result.data;
+        console.log('Session data:', session);
+        
+        if (!session) {
+          throw new Error('Session data is null or undefined');
+        }
+        
+        const stats = session.stats || {};
+        console.log('Stats data:', stats);
+
+        // Simple test first
+        const contentHTML = `
+          <div class="session-card">
+            <div class="session-header">
+              <div class="session-title">Session ${formatDate(session.playDate)}</div>
+              <div class="session-date">${formatDateTime(session.playDate)}</div>
+              <div class="session-status ${session.status}">
+                ${session.status === 'completed' ? '✅ Hoàn thành' : '⏳ Đang chờ'}
+              </div>
+            </div>
+
+            <div class="session-body">
+              <div class="summary-stats">
+                <h3>📊 Tổng quan</h3>
+                <div class="summary-grid">
+                  <div class="summary-item">
+                    <div class="summary-value">${stats.totalVotes || 0}</div>
+                    <div class="summary-label">Tổng người</div>
+                  </div>
+                  <div class="summary-item">
+                    <div class="summary-value">${stats.yesVotes || 0}</div>
+                    <div class="summary-label">Tham gia</div>
+                  </div>
+                  <div class="summary-item">
+                    <div class="summary-value">${stats.proxyVotes || 0}</div>
+                    <div class="summary-label">Vote hộ</div>
+                  </div>
+                  <div class="summary-item">
+                    <div class="summary-value">${formatCurrency(session.totalCost || 0)}</div>
+                    <div class="summary-label">Tổng chi phí</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="stats-grid">
+                <div class="stat-card">
+                  <h3>🏟️ Sân</h3>
+                  <div class="value">${session.courtCount || 0}</div>
+                  <div class="label">Số sân</div>
+                </div>
+                <div class="stat-card">
+                  <h3>🏸 Cầu</h3>
+                  <div class="value">${session.shuttleCount || 0}</div>
+                  <div class="label">Số cầu</div>
+                </div>
+                <div class="stat-card">
+                  <h3>💰 Chi phí</h3>
+                  <div class="value">${formatCurrency(session.totalCost || 0)}</div>
+                  <div class="label">Tổng chi phí</div>
+                </div>
+                <div class="stat-card">
+                  <h3>✅ Đã thu</h3>
+                  <div class="value">${formatCurrency(stats.totalPaid || 0)}</div>
+                  <div class="label">Số tiền đã thu</div>
+                </div>
+                <div class="stat-card">
+                  <h3>⏳ Chưa thu</h3>
+                  <div class="value">${formatCurrency(stats.totalUnpaid || 0)}</div>
+                  <div class="label">Số tiền chưa thu</div>
+                </div>
+                <div class="stat-card">
+                  <h3>📅 Ngày</h3>
+                  <div class="value">${formatDate(session.playDate)}</div>
+                  <div class="label">Ngày chơi</div>
+                </div>
+              </div>
+
+              ${renderParticipants(session, stats)}
+              
+              ${renderCostBreakdown(session)}
+            </div>
+          </div>
+        `;
+
+        document.getElementById('session-content').innerHTML = contentHTML;
+      } catch (error) {
+        console.error('Error loading session details:', error);
+        console.error('Error stack:', error.stack);
+        document.getElementById('session-content').innerHTML = 
+          '<div class="error">❌ Không thể tải chi tiết session: ' + error.message + '</div>';
+      }
+    }
+
+    function renderParticipants(session, stats) {
+      const participants = session.votes ? session.votes.filter(v => v.voteType === 'VOTE_YES') : [];
+      const proxyVotes = session.proxyVotes || [];
+      const totalGoing = participants.length + proxyVotes.length;
+
+      if (totalGoing === 0) {
+        return `
+          <div class="section">
+            <h2>👥 Người tham gia</h2>
+            <div class="empty-state">📭 Chưa có người tham gia</div>
+          </div>
+        `;
+      }
+
+      let html = `
+        <div class="section">
+          <h2>👥 Người tham gia (${totalGoing} người)</h2>
+          <div class="participants-grid">
+      `;
+
+      participants.forEach(vote => {
+        const genderIcon = vote.user.gender === 'male' ? '👦' : '👧';
+        const initials = vote.user.name.split(' ').map(n => n[0]).join('').toUpperCase();
+        
+        html += `
+          <div class="participant-card">
+            <div class="participant-header">
+              <div class="participant-avatar">${initials}</div>
+              <div class="participant-info">
+                <h3>${genderIcon} ${vote.user.name}</h3>
+                <p>${vote.user.gender === 'male' ? 'Nam' : 'Nữ'}</p>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      if (proxyVotes.length > 0) {
+        html += `
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>🤝 Vote hộ (${proxyVotes.length} người)</h2>
+          <div class="participants-grid">
+        `;
+
+        proxyVotes.forEach(proxy => {
+          const genderIcon = proxy.targetUser.gender === 'male' ? '👦' : '👧';
+          const initials = proxy.targetUser.name.split(' ').map(n => n[0]).join('').toUpperCase();
+          
+          html += `
+            <div class="participant-card">
+              <div class="participant-header">
+                <div class="participant-avatar">${initials}</div>
+                <div class="participant-info">
+                  <h3>${genderIcon} ${proxy.targetUser.name}</h3>
+                  <p>Vote bởi: ${proxy.voter.name}</p>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+      }
+
+      html += `
+          </div>
+        </div>
+      `;
+
+      return html;
+    }
+
+    function renderCostBreakdown(session) {
+      if (!session.payments || session.payments.length === 0) {
+        return `
+          <div class="section">
+            <h2>💰 Chi tiết thanh toán</h2>
+            <div class="empty-state">📭 Chưa có dữ liệu thanh toán</div>
+          </div>
+        `;
+      }
+
+      let html = `
+        <div class="section">
+          <h2>💰 Chi tiết thanh toán (${session.payments.length} người)</h2>
+          <div class="payments-list">
+      `;
+
+      session.payments.forEach(payment => {
+        const statusClass = payment.paid ? 'paid' : 'unpaid';
+        const statusText = payment.paid ? '✅ Đã trả' : '⏳ Chưa trả';
+        const paidDate = payment.paidAt ? new Date(payment.paidAt).toLocaleDateString('vi-VN') : '';
+        
+        html += `
+          <div class="payment-item">
+            <div class="payment-info">
+              <div class="payment-name">${payment.userName}</div>
+              ${payment.paid && paidDate ? `<div class="payment-date">Đã trả: ${paidDate}</div>` : ''}
+            </div>
+            <div class="payment-amount">${formatCurrency(payment.amount)}</div>
+            <div class="payment-actions">
+              <div class="payment-status ${statusClass}">${statusText}</div>
+              ${!payment.paid ? `<button class="mark-paid-btn" onclick="markAsPaid(${payment.id}, '${payment.userName}')">✓ Đánh dấu</button>` : ''}
+            </div>
+          </div>
+        `;
+      });
+
+      html += `
+          </div>
+        </div>
+      `;
+
+      return html;
+    }
+
+    function renderPayments(session) {
+      if (!session.payments || session.payments.length === 0) {
+        return `
+          <div class="section">
+            <h2>💳 Thanh toán</h2>
+            <div class="empty-state">📭 Chưa có dữ liệu thanh toán</div>
+          </div>
+        `;
+      }
+
+      let html = `
+        <div class="section">
+          <h2>💳 Thanh toán (${session.payments.length} người)</h2>
+          <div class="payments-list">
+      `;
+
+      session.payments.forEach(payment => {
+        const statusClass = payment.paid ? 'paid' : 'unpaid';
+        const statusText = payment.paid ? '✅ Đã trả' : '❌ Chưa trả';
+        
+        html += `
+          <div class="payment-item">
+            <div class="payment-name">${payment.userName}</div>
+            <div class="payment-amount">${formatCurrency(payment.amount)}</div>
+            <div class="payment-status ${statusClass}">${statusText}</div>
+          </div>
+        `;
+      });
+
+      html += `
+          </div>
+        </div>
+      `;
+
+      return html;
+    }
+
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear();
+      return `${day}/${month}/${year}`;
+    }
+
+    function formatDateTime(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleString('vi-VN', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+
+    function formatCurrency(amount) {
+      if (!amount) return '0đ';
+      return amount.toLocaleString('vi-VN') + 'đ';
+    }
+
+    async function markAsPaid(paymentId, userName) {
+      if (!confirm(`Xác nhận ${userName} đã trả tiền?`)) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/v1/payments/${paymentId}/mark-paid`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        
+        if (result.success) {
+          alert(`✅ Đã đánh dấu ${userName} đã trả tiền!`);
+          // Reload session details
+          const urlParams = new URLSearchParams(window.location.search);
+          const sessionId = urlParams.get('id');
+          loadSessionDetails(sessionId);
+        } else {
+          throw new Error(result.message || 'Không thể cập nhật thanh toán');
+        }
+      } catch (error) {
+        console.error('Error marking as paid:', error);
+        alert('❌ Lỗi: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

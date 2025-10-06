@@ -1,0 +1,1841 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>🔐 Admin Panel - Badmintonight Mỹ Đình</title>
+  <script src="/js/auth.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* Login Form */
+    .login-container {
+      display: none; /* Hide login form */
+      justify-content: center;
+      align-items: center;
+      min-height: 80vh;
+    }
+
+    .login-card {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-width: 400px;
+      width: 100%;
+    }
+
+    .login-card h1 {
+      color: #667eea;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .login-card p {
+      color: #666;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      background-color: white;
+    }
+
+    .form-group select:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    .error-message {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      text-align: center;
+      display: none;
+    }
+
+    /* Admin Panel */
+    .admin-panel {
+      display: block;
+    }
+
+    .header {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h1 {
+      color: #667eea;
+      margin: 0;
+    }
+
+    .logout-btn {
+      background: #dc3545;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .logout-btn:hover {
+      background: #c82333;
+      transform: translateY(-2px);
+    }
+
+    .commands-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .command-card {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 2px solid transparent;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .command-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .command-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 50px rgba(102, 126, 234, 0.2);
+      border-color: #667eea;
+    }
+
+    .command-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .command-card h3 {
+      color: #667eea;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .command-card p {
+      color: #666;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    .disabled-card {
+      opacity: 0.6;
+      background: #f8f9fa !important;
+      border: 2px solid #e9ecef !important;
+      cursor: not-allowed;
+    }
+
+    .disabled-card:hover {
+      transform: none !important;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08) !important;
+      border-color: #e9ecef !important;
+    }
+
+    .disabled-card::before {
+      display: none !important;
+    }
+
+    .disabled-card h3 {
+      color: #6c757d !important;
+    }
+
+    .disabled-card p {
+      color: #6c757d !important;
+    }
+
+    .command-form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .command-form input,
+    .command-form textarea,
+    .command-form select {
+      padding: 10px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    .command-form input:focus,
+    .command-form textarea:focus,
+    .command-form select:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .command-form textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .command-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .command-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .command-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .result-box {
+      margin-top: 15px;
+      padding: 15px;
+      border-radius: 10px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .result-box.success {
+      background: #d4edda;
+      color: #155724;
+      border-left: 4px solid #28a745;
+    }
+
+    .result-box.error {
+      background: #f8d7da;
+      color: #721c24;
+      border-left: 4px solid #dc3545;
+    }
+
+    .result-box pre {
+      margin: 10px 0 0 0;
+      white-space: pre-wrap;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+    }
+
+    /* Payment Summary Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 5% auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e9ecef;
+    }
+
+    .close {
+      color: #aaa;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: #000;
+    }
+
+    .payment-summary {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .summary-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 10px;
+      background: white;
+      border-radius: 5px;
+      border: 1px solid #dee2e6;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: #007bff;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #6c757d;
+      margin-top: 5px;
+    }
+
+    .unpaid-list {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .unpaid-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      margin: 5px 0;
+      background: white;
+      border-radius: 5px;
+      border-left: 4px solid #dc3545;
+    }
+
+    .unpaid-name {
+      font-weight: 500;
+    }
+
+    .unpaid-amount {
+      color: #dc3545;
+      font-weight: bold;
+    }
+
+    /* Payment Manager Modal */
+    .payment-manager-modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+    }
+
+    .payment-manager-content {
+      background-color: #fefefe;
+      margin: 2% auto;
+      padding: 0;
+      border-radius: 15px;
+      width: 95%;
+      max-width: 1200px;
+      max-height: 90vh;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .payment-manager-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .payment-manager-title {
+      font-size: 24px;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .payment-manager-close {
+      color: white;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: opacity 0.3s;
+    }
+
+    .payment-manager-close:hover {
+      opacity: 0.7;
+    }
+
+    .payment-manager-body {
+      padding: 20px;
+      max-height: calc(90vh - 120px);
+      overflow-y: auto;
+    }
+
+    .payment-filters {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      min-width: 200px;
+    }
+
+    .filter-label {
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: #333;
+    }
+
+    .filter-select {
+      padding: 8px 12px;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: border-color 0.3s;
+    }
+
+    .filter-select:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .payment-actions {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 14px;
+    }
+
+    .action-btn.primary {
+      background: #28a745;
+      color: white;
+    }
+
+    .action-btn.primary:hover {
+      background: #218838;
+    }
+
+    .action-btn.secondary {
+      background: #6c757d;
+      color: white;
+    }
+
+    .action-btn.secondary:hover {
+      background: #5a6268;
+    }
+
+    .action-btn.danger {
+      background: #dc3545;
+      color: white;
+    }
+
+    .action-btn.danger:hover {
+      background: #c82333;
+    }
+
+    .payment-table-container {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .payment-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .payment-table th {
+      background: #f8f9fa;
+      padding: 15px 12px;
+      text-align: left;
+      font-weight: 600;
+      color: #495057;
+      border-bottom: 2px solid #dee2e6;
+    }
+
+    .payment-table td {
+      padding: 12px;
+      border-bottom: 1px solid #dee2e6;
+      vertical-align: middle;
+    }
+
+    .payment-table tbody tr:hover {
+      background-color: #f8f9fa;
+    }
+
+    .payment-table tbody tr.selected {
+      background-color: #e3f2fd;
+    }
+
+    .payment-checkbox {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    .payment-status {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .payment-status.paid {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .payment-status.unpaid {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .payment-amount {
+      font-weight: 600;
+      color: #333;
+    }
+
+    .payment-actions-cell {
+      display: flex;
+      gap: 5px;
+    }
+
+    .payment-action-btn {
+      padding: 4px 8px;
+      border: none;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .payment-action-btn.mark {
+      background: #28a745;
+      color: white;
+    }
+
+    .payment-action-btn.unmark {
+      background: #dc3545;
+      color: white;
+    }
+
+    .payment-summary {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .summary-item {
+      text-align: center;
+    }
+
+    .summary-value {
+      font-size: 20px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .summary-label {
+      font-size: 12px;
+      color: #6c757d;
+      margin-top: 5px;
+    }
+
+    .bulk-actions {
+      background: #e9ecef;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 15px;
+      display: none;
+    }
+
+    .bulk-actions.show {
+      display: block;
+    }
+
+    .bulk-actions-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .selected-count {
+      font-weight: 600;
+      color: #495057;
+    }
+
+    .bulk-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .quick-actions {
+      background: white;
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .quick-actions h2 {
+      color: #667eea;
+      margin-bottom: 20px;
+    }
+
+    .quick-actions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+
+    .quick-btn {
+      padding: 15px;
+      background: #f8f9fa;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .quick-btn:hover {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+      .commands-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .header {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .quick-actions-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Login Form -->
+  <div id="login-container" class="login-container">
+    <div class="login-card">
+      <h1>🔐 Admin Login</h1>
+      <p>Badmintonight Mỹ Đình</p>
+      
+      <div id="error-message" class="error-message"></div>
+      
+      <form id="login-form" onsubmit="login(event)">
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="Nhập mật khẩu" required>
+        </div>
+        <button type="submit" class="btn">🚀 Đăng nhập</button>
+        <a href="/" class="btn" style="background: #6c757d; margin-top: 10px; text-decoration: none; display: block; text-align: center;">🏠 Quay về Home</a>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin Panel -->
+  <div id="admin-panel" class="admin-panel">
+    <div class="container">
+      <div class="header">
+        <div>
+          <h1>🏸 Admin Panel - Badmintonight Mỹ Đình</h1>
+        </div>
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <a href="/" class="dashboard-btn" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; padding: 12px 20px; border-radius: 25px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(40, 167, 69, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(40, 167, 69, 0.3)'">🏠 Dashboard</a>
+          <button class="logout-btn" onclick="logout()" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; padding: 12px 20px; border: none; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(220, 53, 69, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(220, 53, 69, 0.3)'">🚪 Đăng xuất</button>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-actions">
+        <h2>⚡ Quick Actions</h2>
+        <div class="quick-actions-grid">
+          <div class="quick-btn" onclick="window.location.href='/'">📊 Dashboard</div>
+          <div class="quick-btn" onclick="window.location.href='/session.html?id=1'">📋 Session Details</div>
+          <div class="quick-btn" onclick="refreshPage()">🔄 Refresh</div>
+        </div>
+      </div>
+
+      <!-- Commands Grid -->
+      <div class="commands-grid">
+        
+        <!-- Create Session -->
+        <div class="command-card">
+          <h3>📅 Tạo Session</h3>
+          <p>Tạo session mới cho ngày được chọn</p>
+          <form class="command-form" onsubmit="createSession(event)">
+            <div class="form-group">
+              <label for="session-name">Tên Session:</label>
+              <input type="text" id="session-name" placeholder="Mỹ Đình" required>
+            </div>
+            <div class="form-group">
+              <label for="date-select">Chọn Ngày:</label>
+              <select id="date-select" required onchange="handleDateChange()">
+                <option value="">-- Chọn ngày --</option>
+                <option value="today">Hôm nay</option>
+                <option value="custom">Chọn ngày khác...</option>
+              </select>
+            </div>
+            <div class="form-group" id="custom-date-group" style="display: none;">
+              <label for="custom-date">Ngày Tùy Chọn:</label>
+              <input type="date" id="custom-date">
+            </div>
+            <div class="form-group">
+              <label for="court-count">Số Sân:</label>
+              <input type="number" id="court-count" min="1" max="10" value="3" required>
+            </div>
+            <button type="submit" class="command-btn">Tạo Session</button>
+            <div class="result-box" id="create-session-result"></div>
+          </form>
+        </div>
+
+        <!-- Set Court Count -->
+        <div class="command-card disabled-card">
+          <h3>🏟️ Nhập Số Sân</h3>
+          <p>Chức năng tạm thời bị vô hiệu hóa - Sử dụng trong phần tạo session</p>
+          <form class="command-form" onsubmit="setCourtCount(event)" disabled>
+            <select id="court-session-select" required disabled>
+              <option value="">-- Đang tải sessions... --</option>
+            </select>
+            <input type="number" id="court-count" placeholder="Số sân (1-10)" min="1" max="10" required disabled>
+            <button type="submit" class="command-btn" disabled>Cập nhật</button>
+            <div class="result-box" id="court-result"></div>
+          </form>
+        </div>
+
+        <!-- Set Shuttle Count -->
+        <div class="command-card disabled-card">
+          <h3>🏸 Nhập Số Cầu</h3>
+          <p>Chức năng tạm thời bị vô hiệu hóa - Sử dụng trong phần tạo session</p>
+          <form class="command-form" onsubmit="setShuttleCount(event)" disabled>
+            <select id="shuttle-session-select" required disabled>
+              <option value="">-- Đang tải sessions... --</option>
+            </select>
+            <input type="number" id="shuttle-count" placeholder="Số cầu (1-50)" min="1" max="50" required disabled>
+            <button type="submit" class="command-btn" disabled>Cập nhật</button>
+            <div class="result-box" id="shuttle-result"></div>
+          </form>
+        </div>
+
+        <!-- Summary -->
+        <div class="command-card">
+          <h3>💰 Tính Toán Chi Phí</h3>
+          <p>Chọn session và nhập số cầu để tính toán chi phí</p>
+          <form class="command-form" onsubmit="calculateSummary(event)">
+            <div class="form-group">
+              <label for="summary-session-select">Chọn Session:</label>
+              <select id="summary-session-select" required>
+                <option value="">-- Đang tải sessions... --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="shuttle-count-summary">Số Cầu Đã Dùng:</label>
+              <input type="number" id="shuttle-count-summary" placeholder="Nhập số cầu đã dùng" min="1" max="50" required>
+            </div>
+            <button type="submit" class="command-btn">Tính Toán</button>
+            <div class="result-box" id="summary-result"></div>
+          </form>
+        </div>
+
+        <!-- Session Management -->
+        <div class="command-card">
+          <h3>🔄 Quản Lý Session</h3>
+          <p>Quản lý session hiện tại và tạo session mới</p>
+          <div class="command-form">
+            <button type="button" class="command-btn" onclick="showPaymentSummary()">👀 Xem Chi Tiết Thanh Toán</button>
+            <button type="button" class="command-btn" onclick="inactiveCurrentSession()" style="background: #ffc107; color: #000;">⏸️ Inactive Session</button>
+            <button type="button" class="command-btn" onclick="completeSession()" style="background: #28a745;">🏁 Hoàn Thành Session</button>
+            <div class="result-box" id="session-management-result"></div>
+          </div>
+        </div>
+
+        <!-- Mark Payment -->
+        <div class="command-card">
+          <h3>💳 Đánh Dấu Đã Trả</h3>
+          <p>Quản lý thanh toán với giao diện table chuyên nghiệp</p>
+          <div class="command-form">
+            <button type="button" class="command-btn" onclick="openPaymentManager()">📋 Mở Quản Lý Thanh Toán</button>
+            <div class="result-box" id="paid-result"></div>
+          </div>
+        </div>
+
+        <!-- View Payments -->
+        <div class="command-card">
+          <h3>📋 Xem Thanh Toán</h3>
+          <p>Xem danh sách thanh toán của session hiện tại</p>
+          <form class="command-form" onsubmit="viewPayments(event)">
+            <button type="submit" class="command-btn">Xem Danh Sách</button>
+            <div class="result-box" id="payments-result"></div>
+          </form>
+        </div>
+
+        <!-- View Stats -->
+        <div class="command-card">
+          <h3>📊 Thống Kê Tổng Quan</h3>
+          <p>Xem thống kê tổng quan của hệ thống</p>
+          <form class="command-form" onsubmit="viewStats(event)">
+            <button type="submit" class="command-btn">Xem Thống Kê</button>
+            <div class="result-box" id="stats-result"></div>
+          </form>
+        </div>
+
+        <!-- Reset Session -->
+        <div class="command-card">
+          <h3>🔄 Reset Session</h3>
+          <p style="color: #dc3545;">⚠️ Xóa tất cả votes và proxy votes của session hiện tại</p>
+          <form class="command-form" onsubmit="resetSession(event)">
+            <button type="submit" class="command-btn" style="background: #dc3545;">Reset Session</button>
+            <div class="result-box" id="reset-result"></div>
+          </form>
+        </div>
+
+      </div>
+      </div>
+    </div>
+
+    <!-- Payment Summary Modal -->
+    <div id="paymentModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>💰 Chi Tiết Thanh Toán</h2>
+          <span class="close" onclick="closePaymentModal()">&times;</span>
+        </div>
+        <div id="paymentModalContent">
+          <div class="loading">⏳ Đang tải dữ liệu...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment Manager Modal -->
+    <div id="paymentManagerModal" class="payment-manager-modal">
+      <div class="payment-manager-content">
+        <div class="payment-manager-header">
+          <h2 class="payment-manager-title">💳 Quản Lý Thanh Toán</h2>
+          <span class="payment-manager-close" onclick="closePaymentManager()">&times;</span>
+        </div>
+        <div class="payment-manager-body">
+          <!-- Filters -->
+          <div class="payment-filters">
+            <div class="filter-group">
+              <label class="filter-label">Chọn Session</label>
+              <select id="payment-session-select" class="filter-select" onchange="loadPayments()">
+                <option value="">-- Đang tải sessions... --</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label class="filter-label">Trạng Thái</label>
+              <select id="payment-status-filter" class="filter-select" onchange="filterPayments()">
+                <option value="">Tất cả</option>
+                <option value="paid">Đã trả</option>
+                <option value="unpaid">Chưa trả</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label class="filter-label">Tìm Kiếm</label>
+              <input type="text" id="payment-search" class="filter-select" placeholder="Tìm theo tên..." onkeyup="filterPayments()">
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="payment-actions">
+            <button class="action-btn primary" onclick="markSelectedAsPaid()">✓ Đánh Dấu Đã Trả</button>
+            <button class="action-btn danger" onclick="unmarkSelectedAsPaid()">✗ Bỏ Đánh Dấu</button>
+            <button class="action-btn secondary" onclick="selectAll()">☑ Chọn Tất Cả</button>
+            <button class="action-btn secondary" onclick="deselectAll()">☐ Bỏ Chọn Tất Cả</button>
+            <button class="action-btn secondary" onclick="loadPayments()">🔄 Làm Mới</button>
+          </div>
+
+          <!-- Payment Table -->
+          <div class="payment-table-container">
+            <table class="payment-table">
+              <thead>
+                <tr>
+                  <th width="50">
+                    <input type="checkbox" id="select-all-checkbox" onchange="toggleSelectAll()">
+                  </th>
+                  <th>Tên Người</th>
+                  <th>Số Tiền</th>
+                  <th>Trạng Thái</th>
+                  <th>Ngày Trả</th>
+                  <th>Thao Tác</th>
+                </tr>
+              </thead>
+              <tbody id="payment-table-body">
+                <tr>
+                  <td colspan="6" style="text-align: center; padding: 40px;">
+                    <div class="loading">⏳ Đang tải dữ liệu...</div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Summary -->
+          <div class="payment-summary">
+            <div class="summary-item">
+              <div class="summary-value" id="total-payments">0</div>
+              <div class="summary-label">Tổng Thanh Toán</div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-value" id="paid-payments">0</div>
+              <div class="summary-label">Đã Trả</div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-value" id="unpaid-payments">0</div>
+              <div class="summary-label">Chưa Trả</div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-value" id="total-amount">0đ</div>
+              <div class="summary-label">Tổng Tiền</div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-value" id="paid-amount">0đ</div>
+              <div class="summary-label">Đã Thu</div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-value" id="unpaid-amount">0đ</div>
+              <div class="summary-label">Còn Thiếu</div>
+            </div>
+          </div>
+
+          <!-- Bulk Actions -->
+          <div class="bulk-actions" id="bulk-actions">
+            <div class="bulk-actions-content">
+              <div class="selected-count">
+                Đã chọn: <span id="selected-count">0</span> thanh toán
+              </div>
+              <div class="bulk-buttons">
+                <button class="action-btn primary" onclick="markSelectedAsPaid()">✓ Đánh Dấu Đã Trả</button>
+                <button class="action-btn danger" onclick="unmarkSelectedAsPaid()">✗ Bỏ Đánh Dấu</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+    const API_BASE = '';
+
+    // Check authentication on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      // Check if user is already logged in
+      if (!window.authManager || !window.authManager.isLoggedIn()) {
+        // Redirect to index if not authenticated
+        window.location.href = '/';
+        return;
+      }
+
+      // Show current user info
+      const user = window.authManager.getCurrentUser();
+      if (user && user.id) {
+        console.log('Logged in as:', user.id);
+        const userDisplay = document.getElementById('user-display');
+        if (userDisplay) {
+          userDisplay.textContent = `👤 ${user.id}`;
+        }
+      }
+      const dateSelect = document.getElementById('date-select');
+      const customDate = document.getElementById('custom-date');
+      
+      if (dateSelect) {
+        dateSelect.addEventListener('change', (e) => {
+          if (e.target.value === 'custom') {
+            customDate.style.display = 'block';
+            customDate.required = true;
+          } else {
+            customDate.style.display = 'none';
+            customDate.required = false;
+          }
+        });
+      }
+      
+      // Load sessions for dropdowns
+      loadSessionsForDropdowns();
+    });
+
+    async function loadSessionsForDropdowns() {
+      try {
+        const response = await window.authenticatedFetch('/api/v1/admin/sessions');
+        const result = await response.json();
+        
+        if (result.success) {
+          const sessions = result.data;
+          
+          // Populate all session selects
+          const courtSelect = document.getElementById('court-session-select');
+          const shuttleSelect = document.getElementById('shuttle-session-select');
+          const summarySelect = document.getElementById('summary-session-select');
+          
+          if (courtSelect && shuttleSelect && summarySelect) {
+            // Clear existing options
+            courtSelect.innerHTML = '<option value="">-- Chọn session --</option>';
+            shuttleSelect.innerHTML = '<option value="">-- Chọn session --</option>';
+            summarySelect.innerHTML = '<option value="">-- Chọn session --</option>';
+            
+            sessions.forEach(session => {
+              const option = document.createElement('option');
+              option.value = session.id;
+              const creatorName = session.createdBy ? session.createdBy.name : 'Unknown';
+              const sessionName = session.name || `Session ${new Date(session.playDate).toLocaleDateString('vi-VN')}`;
+              option.textContent = `${sessionName} - ${new Date(session.playDate).toLocaleDateString('vi-VN')} (Tạo bởi: ${creatorName})`;
+              
+              courtSelect.appendChild(option.cloneNode(true));
+              shuttleSelect.appendChild(option.cloneNode(true));
+              summarySelect.appendChild(option);
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Error loading sessions:', error);
+      }
+    }
+
+      // Check if already logged in
+      if (sessionStorage.getItem('adminLoggedIn') === 'true') {
+        showAdminPanel();
+        loadUnpaidUsers(); // Load unpaid users on panel load
+      }
+
+    function login(event) {
+      event.preventDefault();
+      const password = document.getElementById('password').value;
+      const errorMsg = document.getElementById('error-message');
+
+      if (password === ADMIN_PASSWORD) {
+        sessionStorage.setItem('adminLoggedIn', 'true');
+        showAdminPanel();
+      } else {
+        errorMsg.textContent = '❌ Mật khẩu không đúng!';
+        errorMsg.style.display = 'block';
+        setTimeout(() => {
+          errorMsg.style.display = 'none';
+        }, 3000);
+      }
+    }
+
+    function logout() {
+      sessionStorage.removeItem('adminLoggedIn');
+      document.getElementById('login-container').style.display = 'flex';
+      document.getElementById('admin-panel').style.display = 'none';
+      document.getElementById('password').value = '';
+    }
+
+    function showAdminPanel() {
+      document.getElementById('login-container').style.display = 'none';
+      document.getElementById('admin-panel').style.display = 'block';
+      loadUnpaidUsers(); // Load unpaid users when showing panel
+    }
+
+    function refreshPage() {
+      location.reload();
+    }
+
+    function showResult(elementId, message, isSuccess = true) {
+      const resultBox = document.getElementById(elementId);
+      resultBox.className = 'result-box ' + (isSuccess ? 'success' : 'error');
+      resultBox.innerHTML = message;
+      resultBox.style.display = 'block';
+    }
+
+    // Logout function
+    function logout() {
+      if (confirm('Bạn có chắc muốn đăng xuất?')) {
+        window.authManager.logout();
+      }
+    }
+
+    async function executeCommand(endpoint, method = 'POST', body = null) {
+      try {
+        const options = {
+          method,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        };
+
+        if (body) {
+          options.body = JSON.stringify(body);
+        }
+
+        const response = await window.authenticatedFetch(endpoint, options);
+        const result = await response.json();
+        return result;
+      } catch (error) {
+        return {
+          success: false,
+          message: error.message
+        };
+      }
+    }
+
+    function handleDateChange() {
+      const dateSelect = document.getElementById('date-select').value;
+      const customDateGroup = document.getElementById('custom-date-group');
+      
+      if (dateSelect === 'custom') {
+        customDateGroup.style.display = 'block';
+        // Set minimum date to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('custom-date').min = today;
+      } else {
+        customDateGroup.style.display = 'none';
+      }
+    }
+
+    async function createSession(event) {
+      event.preventDefault();
+      const sessionName = document.getElementById('session-name').value;
+      const courtCount = parseInt(document.getElementById('court-count').value);
+      const dateSelect = document.getElementById('date-select').value;
+      const customDate = document.getElementById('custom-date').value;
+      
+      if (!sessionName || !courtCount) {
+        showResult('create-session-result', '❌ Vui lòng điền đầy đủ thông tin', false);
+        return;
+      }
+
+      let dateValue;
+      if (dateSelect === 'today') {
+        dateValue = 'today';
+      } else if (dateSelect === 'custom' && customDate) {
+        dateValue = customDate;
+      } else {
+        showResult('create-session-result', '❌ Vui lòng chọn ngày', false);
+        return;
+      }
+
+      // Generate session name with date
+      const finalSessionName = `${sessionName} (${formatDateForDisplay(dateValue)})`;
+
+      const result = await executeCommand('/api/v1/admin/sessions', 'POST', { 
+        date: dateValue,
+        name: finalSessionName,
+        courtCount: courtCount
+      });
+      
+      if (result.success) {
+        showResult('create-session-result', `✅ ${result.message}`);
+        loadSessions();
+        // Clear form
+        document.getElementById('session-name').value = '';
+        document.getElementById('court-count').value = '3';
+        document.getElementById('date-select').value = '';
+        document.getElementById('custom-date').value = '';
+        document.getElementById('custom-date-group').style.display = 'none';
+      } else {
+        showResult('create-session-result', `❌ ${result.message}`, false);
+      }
+    }
+
+    function formatDateForDisplay(dateValue) {
+      if (dateValue === 'today') {
+        const today = new Date();
+        return today.toLocaleDateString('vi-VN');
+      } else {
+        const date = new Date(dateValue);
+        return date.toLocaleDateString('vi-VN');
+      }
+    }
+
+    async function setCourtCount(event) {
+      event.preventDefault();
+      const count = document.getElementById('court-count').value;
+      const sessionId = document.getElementById('court-session-select').value;
+      
+      if (!sessionId) {
+        showResult('court-result', '❌ Vui lòng chọn session', false);
+        return;
+      }
+      
+      const result = await executeCommand('/api/v1/admin/set-court', 'POST', { 
+        count: parseInt(count),
+        sessionId: parseInt(sessionId)
+      });
+      
+      if (result.success) {
+        showResult('court-result', `✅ ${result.message}`);
+        loadSessionsForDropdowns(); // Refresh dropdowns
+      } else {
+        showResult('court-result', `❌ ${result.message}`, false);
+      }
+    }
+
+    async function setShuttleCount(event) {
+      event.preventDefault();
+      const count = document.getElementById('shuttle-count').value;
+      const sessionId = document.getElementById('shuttle-session-select').value;
+      
+      if (!sessionId) {
+        showResult('shuttle-result', '❌ Vui lòng chọn session', false);
+        return;
+      }
+      
+      const result = await executeCommand('/api/v1/admin/set-shuttle', 'POST', { 
+        count: parseInt(count),
+        sessionId: parseInt(sessionId)
+      });
+      
+      if (result.success) {
+        showResult('shuttle-result', `✅ ${result.message}`);
+        loadSessionsForDropdowns(); // Refresh dropdowns
+      } else {
+        showResult('shuttle-result', `❌ ${result.message}`, false);
+      }
+    }
+
+    async function calculateSummary(event) {
+      event.preventDefault();
+      const sessionId = document.getElementById('summary-session-select').value;
+      const shuttleCount = parseInt(document.getElementById('shuttle-count-summary').value);
+      
+      if (!sessionId) {
+        showResult('summary-result', '❌ Vui lòng chọn session', false);
+        return;
+      }
+      
+      if (!shuttleCount || shuttleCount < 1) {
+        showResult('summary-result', '❌ Vui lòng nhập số cầu đã dùng', false);
+        return;
+      }
+      
+      const result = await executeCommand(`/api/v1/admin/sessions/${sessionId}/calculate`, 'POST', {
+        shuttleCount: shuttleCount
+      });
+      
+      if (result.success) {
+        showResult('summary-result', `✅ ${result.message}\n\nTổng chi phí: ${result.data.totalCost.toLocaleString('vi-VN')}đ\nSố người tham gia: ${result.data.participantCount}\nSố cầu đã dùng: ${shuttleCount}`);
+      } else {
+        showResult('summary-result', `❌ ${result.message}`, false);
+      }
+    }
+
+    async function inactiveCurrentSession() {
+      if (!confirm('Xác nhận inactive session hiện tại? Bạn có thể tạo session mới sau khi inactive.')) {
+        return;
+      }
+
+      const result = await executeCommand('/api/v1/admin/sessions/inactive', 'POST');
+      
+      if (result.success) {
+        showResult('session-management-result', `✅ ${result.message}`);
+        loadSessions(); // Reload sessions list
+      } else {
+        showResult('session-management-result', `❌ ${result.message}`, false);
+      }
+    }
+
+    async function completeSession() {
+      if (!confirm('Xác nhận hoàn thành session hiện tại?')) {
+        return;
+      }
+
+      const result = await executeCommand('/api/v1/admin/complete', 'POST');
+      
+      if (result.success) {
+        showResult('session-management-result', `✅ ${result.message}`);
+      } else {
+        showResult('session-management-result', `❌ ${result.message}`, false);
+      }
+    }
+
+    async function showPaymentSummary() {
+      try {
+        const response = await window.authenticatedFetch('/api/v1/admin/payment-summary');
+        const result = await response.json();
+        
+        if (!result.success) {
+          alert('❌ ' + result.message);
+          return;
+        }
+
+        const data = result.data;
+        const modalContent = document.getElementById('paymentModalContent');
+        
+        let html = `
+          <div class="payment-summary">
+            <h3>📊 Tổng Quan Session</h3>
+            <p><strong>Ngày:</strong> ${new Date(data.session.playDate).toLocaleDateString('vi-VN')}</p>
+            <p><strong>Trạng thái:</strong> ${data.session.status === 'completed' ? '✅ Hoàn thành' : '⏳ Đang hoạt động'}</p>
+            <p><strong>Tổng chi phí:</strong> ${data.session.totalCost ? data.session.totalCost.toLocaleString('vi-VN') + 'đ' : 'Chưa tính'}</p>
+          </div>
+
+          <div class="summary-stats">
+            <div class="stat-item">
+              <div class="stat-value">${data.summary.totalUsers}</div>
+              <div class="stat-label">Tổng người</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" style="color: #28a745;">${data.summary.paidCount}</div>
+              <div class="stat-label">Đã trả</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" style="color: #dc3545;">${data.summary.unpaidCount}</div>
+              <div class="stat-label">Chưa trả</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">${data.summary.completionRate}%</div>
+              <div class="stat-label">Hoàn thành</div>
+            </div>
+          </div>
+
+          <div class="summary-stats">
+            <div class="stat-item">
+              <div class="stat-value">${data.summary.totalAmount.toLocaleString('vi-VN')}đ</div>
+              <div class="stat-label">Tổng tiền</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" style="color: #28a745;">${data.summary.paidAmount.toLocaleString('vi-VN')}đ</div>
+              <div class="stat-label">Đã thu</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" style="color: #dc3545;">${data.summary.unpaidAmount.toLocaleString('vi-VN')}đ</div>
+              <div class="stat-label">Còn thiếu</div>
+            </div>
+          </div>
+        `;
+
+        if (data.unpaidUsers.length > 0) {
+          html += `
+            <h3>❌ Danh Sách Chưa Thanh Toán</h3>
+            <div class="unpaid-list">
+          `;
+          
+          data.unpaidUsers.forEach(user => {
+            html += `
+              <div class="unpaid-item">
+                <span class="unpaid-name">${user.userName}</span>
+                <span class="unpaid-amount">${user.amount.toLocaleString('vi-VN')}đ</span>
+              </div>
+            `;
+          });
+          
+          html += `</div>`;
+        } else {
+          html += `
+            <div style="text-align: center; padding: 20px; background: #d4edda; border-radius: 8px; color: #155724;">
+              <h3>✅ Tất Cả Đã Thanh Toán!</h3>
+              <p>Có thể hoàn thành session ngay bây giờ.</p>
+            </div>
+          `;
+        }
+
+        modalContent.innerHTML = html;
+        document.getElementById('paymentModal').style.display = 'block';
+        
+      } catch (error) {
+        console.error('Error loading payment summary:', error);
+        alert('❌ Lỗi: ' + error.message);
+      }
+    }
+
+    function closePaymentModal() {
+      document.getElementById('paymentModal').style.display = 'none';
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const modal = document.getElementById('paymentModal');
+      if (event.target === modal) {
+        closePaymentModal();
+      }
+      
+      const paymentManagerModal = document.getElementById('paymentManagerModal');
+      if (event.target === paymentManagerModal) {
+        closePaymentManager();
+      }
+    }
+
+    // Payment Manager Functions
+    let allPayments = [];
+    let filteredPayments = [];
+    let selectedPayments = new Set();
+
+    function openPaymentManager() {
+      document.getElementById('paymentManagerModal').style.display = 'block';
+      loadSessionsForPaymentManager();
+    }
+
+    function closePaymentManager() {
+      document.getElementById('paymentManagerModal').style.display = 'none';
+      selectedPayments.clear();
+      updateBulkActions();
+    }
+
+    async function loadSessionsForPaymentManager() {
+      try {
+        const response = await window.authenticatedFetch('/api/v1/admin/sessions');
+        const result = await response.json();
+        
+        if (result.success) {
+          const sessions = result.data;
+          const select = document.getElementById('payment-session-select');
+          
+          select.innerHTML = '<option value="">-- Chọn session --</option>';
+          sessions.forEach(session => {
+            const option = document.createElement('option');
+            option.value = session.id;
+            const creatorName = session.createdBy ? session.createdBy.name : 'Unknown';
+            const sessionName = session.name || `Session ${new Date(session.playDate).toLocaleDateString('vi-VN')}`;
+            option.textContent = `${sessionName} - ${new Date(session.playDate).toLocaleDateString('vi-VN')} (Tạo bởi: ${creatorName})`;
+            select.appendChild(option);
+          });
+        }
+      } catch (error) {
+        console.error('Error loading sessions for payment manager:', error);
+      }
+    }
+
+    async function loadPayments() {
+      const sessionId = document.getElementById('payment-session-select').value;
+      
+      if (!sessionId) {
+        document.getElementById('payment-table-body').innerHTML = 
+          '<tr><td colspan="6" style="text-align: center; padding: 40px;">Vui lòng chọn session</td></tr>';
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/v1/payments?sessionId=${sessionId}`);
+        const result = await response.json();
+        
+        if (result.success) {
+          allPayments = result.data;
+          filteredPayments = [...allPayments];
+          renderPaymentsTable();
+          updateSummary();
+        } else {
+          document.getElementById('payment-table-body').innerHTML = 
+            '<tr><td colspan="6" style="text-align: center; padding: 40px;">❌ ' + result.error + '</td></tr>';
+        }
+      } catch (error) {
+        console.error('Error loading payments:', error);
+        document.getElementById('payment-table-body').innerHTML = 
+          '<tr><td colspan="6" style="text-align: center; padding: 40px;">❌ Lỗi tải dữ liệu</td></tr>';
+      }
+    }
+
+    function renderPaymentsTable() {
+      const tbody = document.getElementById('payment-table-body');
+      
+      if (filteredPayments.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px;">Không có dữ liệu</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = filteredPayments.map(payment => `
+        <tr class="${selectedPayments.has(payment.id) ? 'selected' : ''}">
+          <td>
+            <input type="checkbox" 
+                   class="payment-checkbox" 
+                   ${selectedPayments.has(payment.id) ? 'checked' : ''}
+                   onchange="togglePaymentSelection(${payment.id})">
+          </td>
+          <td>${payment.userName}</td>
+          <td class="payment-amount">${payment.amount.toLocaleString('vi-VN')}đ</td>
+          <td>
+            <span class="payment-status ${payment.paid ? 'paid' : 'unpaid'}">
+              ${payment.paid ? '✅ Đã trả' : '⏳ Chưa trả'}
+            </span>
+          </td>
+          <td>${payment.paidAt ? new Date(payment.paidAt).toLocaleDateString('vi-VN') : '-'}</td>
+          <td class="payment-actions-cell">
+            ${!payment.paid ? 
+              `<button class="payment-action-btn mark" onclick="markSingleAsPaid(${payment.id})">✓ Đánh dấu</button>` :
+              `<button class="payment-action-btn unmark" onclick="unmarkSingleAsPaid(${payment.id})">✗ Bỏ đánh dấu</button>`
+            }
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function filterPayments() {
+      const statusFilter = document.getElementById('payment-status-filter').value;
+      const searchTerm = document.getElementById('payment-search').value.toLowerCase();
+      
+      filteredPayments = allPayments.filter(payment => {
+        const matchesStatus = !statusFilter || 
+          (statusFilter === 'paid' && payment.paid) || 
+          (statusFilter === 'unpaid' && !payment.paid);
+        
+        const matchesSearch = !searchTerm || 
+          payment.userName.toLowerCase().includes(searchTerm);
+        
+        return matchesStatus && matchesSearch;
+      });
+      
+      renderPaymentsTable();
+      updateSummary();
+    }
+
+    function updateSummary() {
+      const total = filteredPayments.length;
+      const paid = filteredPayments.filter(p => p.paid).length;
+      const unpaid = total - paid;
+      const totalAmount = filteredPayments.reduce((sum, p) => sum + p.amount, 0);
+      const paidAmount = filteredPayments.filter(p => p.paid).reduce((sum, p) => sum + p.amount, 0);
+      const unpaidAmount = totalAmount - paidAmount;
+
+      document.getElementById('total-payments').textContent = total;
+      document.getElementById('paid-payments').textContent = paid;
+      document.getElementById('unpaid-payments').textContent = unpaid;
+      document.getElementById('total-amount').textContent = totalAmount.toLocaleString('vi-VN') + 'đ';
+      document.getElementById('paid-amount').textContent = paidAmount.toLocaleString('vi-VN') + 'đ';
+      document.getElementById('unpaid-amount').textContent = unpaidAmount.toLocaleString('vi-VN') + 'đ';
+    }
+
+    function togglePaymentSelection(paymentId) {
+      if (selectedPayments.has(paymentId)) {
+        selectedPayments.delete(paymentId);
+      } else {
+        selectedPayments.add(paymentId);
+      }
+      
+      updateBulkActions();
+      renderPaymentsTable();
+    }
+
+    function toggleSelectAll() {
+      const selectAllCheckbox = document.getElementById('select-all-checkbox');
+      
+      if (selectAllCheckbox.checked) {
+        filteredPayments.forEach(payment => selectedPayments.add(payment.id));
+      } else {
+        selectedPayments.clear();
+      }
+      
+      updateBulkActions();
+      renderPaymentsTable();
+    }
+
+    function selectAll() {
+      filteredPayments.forEach(payment => selectedPayments.add(payment.id));
+      document.getElementById('select-all-checkbox').checked = true;
+      updateBulkActions();
+      renderPaymentsTable();
+    }
+
+    function deselectAll() {
+      selectedPayments.clear();
+      document.getElementById('select-all-checkbox').checked = false;
+      updateBulkActions();
+      renderPaymentsTable();
+    }
+
+    function updateBulkActions() {
+      const bulkActions = document.getElementById('bulk-actions');
+      const selectedCount = document.getElementById('selected-count');
+      
+      selectedCount.textContent = selectedPayments.size;
+      
+      if (selectedPayments.size > 0) {
+        bulkActions.classList.add('show');
+      } else {
+        bulkActions.classList.remove('show');
+      }
+    }
+
+    async function markSelectedAsPaid() {
+      if (selectedPayments.size === 0) {
+        alert('Vui lòng chọn ít nhất một thanh toán');
+        return;
+      }
+
+      if (!confirm(`Xác nhận đánh dấu ${selectedPayments.size} thanh toán là đã trả?`)) {
+        return;
+      }
+
+      const promises = Array.from(selectedPayments).map(paymentId => 
+        fetch(`/api/payments/${paymentId}/mark-paid`, { method: 'POST' })
+      );
+
+      try {
+        const results = await Promise.all(promises);
+        const successCount = results.filter(r => r.ok).length;
+        
+        alert(`✅ Đã đánh dấu ${successCount}/${selectedPayments.size} thanh toán thành công`);
+        
+        selectedPayments.clear();
+        updateBulkActions();
+        loadPayments();
+      } catch (error) {
+        console.error('Error marking payments as paid:', error);
+        alert('❌ Có lỗi xảy ra khi đánh dấu thanh toán');
+      }
+    }
+
+    async function unmarkSelectedAsPaid() {
+      if (selectedPayments.size === 0) {
+        alert('Vui lòng chọn ít nhất một thanh toán');
+        return;
+      }
+
+      if (!confirm(`Xác nhận bỏ đánh dấu ${selectedPayments.size} thanh toán?`)) {
+        return;
+      }
+
+      // Note: This would require a new API endpoint to unmark payments
+      alert('⚠️ Chức năng bỏ đánh dấu chưa được implement. Vui lòng liên hệ admin.');
+    }
+
+    async function markSingleAsPaid(paymentId) {
+      if (!confirm('Xác nhận đánh dấu thanh toán này là đã trả?')) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/v1/payments/${paymentId}/mark-paid`, { method: 'POST' });
+        const result = await response.json();
+        
+        if (result.success) {
+          alert('✅ Đã đánh dấu thanh toán thành công');
+          loadPayments();
+        } else {
+          alert('❌ ' + result.error);
+        }
+      } catch (error) {
+        console.error('Error marking payment as paid:', error);
+        alert('❌ Có lỗi xảy ra');
+      }
+    }
+
+    async function unmarkSingleAsPaid(paymentId) {
+      alert('⚠️ Chức năng bỏ đánh dấu chưa được implement. Vui lòng liên hệ admin.');
+    }
+
+    async function loadUnpaidUsers() {
+      try {
+        const result = await executeCommand('/api/v1/admin/unpaid-users', 'GET');
+        
+        const select = document.getElementById('unpaid-users');
+        
+        if (result.success && result.data.length > 0) {
+          select.innerHTML = '<option value="">-- Chọn người đã trả tiền --</option>';
+          result.data.forEach(payment => {
+            const option = document.createElement('option');
+            option.value = payment.id;
+            option.textContent = `${payment.userName} - ${payment.amount.toLocaleString('vi-VN')}đ`;
+            select.appendChild(option);
+          });
+        } else {
+          select.innerHTML = '<option value="">✅ Tất cả đã trả tiền!</option>';
+        }
+      } catch (error) {
+        console.error('Error loading unpaid users:', error);
+      }
+    }
+
+    async function markPaid(event) {
+      event.preventDefault();
+      const paymentId = document.getElementById('unpaid-users').value;
+      
+      if (!paymentId) {
+        showResult('paid-result', '❌ Vui lòng chọn user', false);
+        return;
+      }
+      
+      const result = await executeCommand(`/api/v1/payments/${paymentId}/mark-paid`, 'POST');
+      
+      if (result.success) {
+        showResult('paid-result', `✅ ${result.message}`);
+        loadUnpaidUsers(); // Reload list
+      } else {
+        showResult('paid-result', `❌ ${result.message}`, false);
+      }
+    }
+
+    async function viewPayments(event) {
+      event.preventDefault();
+      
+      const result = await executeCommand('/api/v1/admin/payments', 'GET');
+      
+      if (result.success) {
+        let html = '<strong>Danh sách thanh toán:</strong><pre>';
+        result.data.forEach(p => {
+          const status = p.paid ? '✅' : '❌';
+          html += `${status} ${p.userName}: ${p.amount.toLocaleString('vi-VN')}đ\n`;
+        });
+        html += '</pre>';
+        showResult('payments-result', html);
+      } else {
+        showResult('payments-result', `❌ ${result.message}`, false);
+      }
+    }
+
+    async function viewStats(event) {
+      event.preventDefault();
+      
+      const result = await executeCommand('/api/v1/statistics/overview', 'GET');
+      
+      if (result.success) {
+        const data = result.data;
+        let html = '<strong>Thống kê tổng quan:</strong><pre>';
+        html += `📊 Sessions: ${data.sessions.total} (Hoàn thành: ${data.sessions.completed})\n`;
+        html += `💰 Payments: ${data.payments.total} (Đã trả: ${data.payments.paid})\n`;
+        html += `👥 Users: ${data.users.total}\n`;
+        html += '</pre>';
+        showResult('stats-result', html);
+      } else {
+        showResult('stats-result', `❌ ${result.message}`, false);
+      }
+    }
+
+    async function resetSession(event) {
+      event.preventDefault();
+      
+      if (!confirm('⚠️ BẠN CÓ CHẮC CHẮN? Hành động này sẽ xóa tất cả votes và proxy votes!')) {
+        return;
+      }
+
+      const result = await executeCommand('/api/v1/admin/reset', 'POST');
+      
+      if (result.success) {
+        showResult('reset-result', `✅ ${result.message}`);
+      } else {
+        showResult('reset-result', `❌ ${result.message}`, false);
+      }
+    }
+  </script>
+</body>
+</html>
+
