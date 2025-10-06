@@ -25,7 +25,11 @@ else
 fi
 
 # Always generate Prisma client
+# npx prisma generate
+# for test only
+npm install
 npx prisma generate
+npx prisma migrate deploy
 
 # Start the rest of the services with hot reload
 docker-compose -f docker-compose.yml -f docker-compose.override.yml up --build
