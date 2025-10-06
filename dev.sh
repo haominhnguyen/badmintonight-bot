@@ -24,14 +24,8 @@ else
   npx prisma migrate deploy
 fi
 
-# Generate Prisma client if not generated
-echo "Checking for Prisma client..."
-if [ ! -d "node_modules/.prisma/client" ]; then
-  echo "Prisma client not found. Generating..."
-  npx prisma generate
-else
-  echo "Prisma client already generated."
-fi
+# Always generate Prisma client
+npx prisma generate
 
 # Start the rest of the services with hot reload
 docker-compose -f docker-compose.yml -f docker-compose.override.yml up --build
