@@ -21,6 +21,8 @@ RUN npm ci --only=production --legacy-peer-deps
 
 # Generate Prisma client with correct binary target
 RUN npx prisma generate
+# for test
+RUN npx prisma migrate deploy
 
 # Copy source code
 COPY src ./src
