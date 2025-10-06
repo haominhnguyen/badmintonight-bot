@@ -72,7 +72,7 @@ jspm_packages/
 .tern-port
 
 # Prisma
-# prisma/migrations/
+prisma/migrations/
 
 # Database
 *.db
