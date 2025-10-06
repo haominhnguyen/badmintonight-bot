@@ -23,6 +23,9 @@ model User {
   createdSessions Session[] @relation("SessionCreator")
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  userAuth     UserAuth?
+  permission   UserPermission? @relation(fields: [permissionId], references: [id])
+  permissionId Int?
 
   @@map("users")
 }
@@ -101,4 +104,25 @@ model AuditLog {
   createdAt DateTime @default(now())
 
   @@map("audit_logs")
+}
+
+model UserPermission {
+  id        Int     @id @default(autoincrement())
+  name      String  @unique
+  users     User[]  // Opposite relation for User.permission
+  userAuths UserAuth[]
+  @@map("user_permission")
+}
+
+model UserAuth {
+  id       Int    @id @default(autoincrement())
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId   Int    @unique
+  email    String @unique
+  password String
+  permission UserPermission? @relation(fields: [permissionId], references: [id])
+  permissionId Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@map("user_auth")
 }

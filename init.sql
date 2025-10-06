@@ -1,2 +1,2 @@
 -- Initialize database
-CREATE DATABASE IF NOT EXISTS badminton_bot;
+-- CREATE DATABASE IF NOT EXISTS badminton_bot;
