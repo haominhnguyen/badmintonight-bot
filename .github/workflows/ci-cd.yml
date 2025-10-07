@@ -190,7 +190,7 @@ jobs:
         password: ${{ secrets.PRODUCTION_PASSWORD }}
         script: |
           cd /opt/badminton-bot
-          ./backup-restore.sh backup
+          sudo ./backup-restore.sh backup
 
     - name: Deploy to production server
       uses: appleboy/ssh-action@v1.0.3
@@ -201,10 +201,10 @@ jobs:
         script: |
           cd /opt/badminton-bot
           git pull origin main
-          docker-compose -f docker-compose.prod.yml down
-          docker-compose -f docker-compose.prod.yml pull
-          docker-compose -f docker-compose.prod.yml up -d
-          ./manage.sh status
+          sudo docker-compose -f docker-compose.prod.yml down
+          sudo docker-compose -f docker-compose.prod.yml pull
+          sudo docker-compose -f docker-compose.prod.yml up -d
+          sudo ./manage.sh status
 
     - name: Health check production
       run: |
@@ -248,7 +248,7 @@ jobs:
         password: ${{ secrets.PRODUCTION_PASSWORD }}
         script: |
           cd /opt/badminton-bot
-          ./manage.sh rollback
+          sudo ./manage.sh rollback
 
     - name: Notify rollback
       uses: 8398a7/action-slack@v3
