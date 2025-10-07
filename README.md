@@ -130,6 +130,9 @@ FRONTEND_URL=https://yourdomain.com
 - `deploy.sh` - Complete deployment
 - `fix-all-permissions.sh` - Fix file permissions
 - `fix-logs-permissions.sh` - Fix logs permissions
+- `setup-nginx.sh` - Setup nginx for port 80
+- `fix-api-docs.sh` - Fix API Docs access
+- `debug-api-docs.sh` - Debug API Docs issues
 - `check-containers.sh` - Check container status
 - `manage.sh` - Container management
 
