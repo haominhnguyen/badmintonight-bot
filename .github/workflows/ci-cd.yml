@@ -201,12 +201,17 @@ jobs:
           git pull origin main
           
           # Backup nginx config
-          cp nginx.conf nginx.conf.backup
+          sudo cp nginx.conf nginx.conf.backup
+          sudo chown $USER:$USER nginx.conf.backup
           
           # Make other scripts executable
           sudo chmod +x ssl-setup-production.sh
           sudo chmod +x check-containers.sh
           sudo chmod +x manage.sh
+          sudo chmod +x setup-webroot.sh
+          
+          # Setup webroot for SSL
+          sudo ./setup-webroot.sh
           
           # Setup SSL certificates
           sudo ./ssl-setup-production.sh

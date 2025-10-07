@@ -63,14 +63,11 @@ install_certbot() {
 setup_ssl_certificates() {
     log_info "Setting up SSL certificates for $DOMAIN..."
     
-    # Use HTTP-only nginx config temporarily
-    if [[ -f "nginx-http-only.conf" ]]; then
-        if [[ $EUID -eq 0 ]]; then
-            cp nginx-http-only.conf nginx.conf
-        else
-            sudo cp nginx-http-only.conf nginx.conf
-        fi
-        log_info "Using HTTP-only nginx config for certificate generation"
+    # Check if domain is accessible
+    log_info "Checking domain accessibility..."
+    if ! curl -s --connect-timeout 10 http://$DOMAIN > /dev/null; then
+        log_warning "Domain $DOMAIN is not accessible. Skipping SSL setup."
+        return 0
     fi
     
     # Stop nginx if running
@@ -80,21 +77,28 @@ setup_ssl_certificates() {
         sudo systemctl stop nginx 2>/dev/null || true
     fi
     
-    # Generate SSL certificate
+    # Stop any process using port 80
     if [[ $EUID -eq 0 ]]; then
-        certbot certonly --standalone --non-interactive --agree-tos --email $EMAIL -d $DOMAIN
+        fuser -k 80/tcp 2>/dev/null || true
     else
-        sudo certbot certonly --standalone --non-interactive --agree-tos --email $EMAIL -d $DOMAIN
+        sudo fuser -k 80/tcp 2>/dev/null || true
     fi
     
-    # Restore HTTPS nginx config
-    if [[ -f "nginx.conf.backup" ]]; then
+    # Generate SSL certificate with webroot method
+    if [[ $EUID -eq 0 ]]; then
+        certbot certonly --webroot --non-interactive --agree-tos --email $EMAIL -d $DOMAIN --webroot-path /var/www/html
+    else
+        sudo certbot certonly --webroot --non-interactive --agree-tos --email $EMAIL -d $DOMAIN --webroot-path /var/www/html
+    fi
+    
+    # If webroot fails, try standalone
+    if [[ $? -ne 0 ]]; then
+        log_info "Webroot method failed, trying standalone..."
         if [[ $EUID -eq 0 ]]; then
-            cp nginx.conf.backup nginx.conf
+            certbot certonly --standalone --non-interactive --agree-tos --email $EMAIL -d $DOMAIN
         else
-            sudo cp nginx.conf.backup nginx.conf
+            sudo certbot certonly --standalone --non-interactive --agree-tos --email $EMAIL -d $DOMAIN
         fi
-        log_info "Restored HTTPS nginx config"
     fi
     
     log_success "SSL certificates generated"

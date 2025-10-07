@@ -46,6 +46,10 @@ fix_git_permissions() {
     # Fix git safe directory
     sudo git config --global --add safe.directory $PROJECT_DIR
     
+    # Fix git fetch head permission
+    sudo chown $USER:$USER .git/FETCH_HEAD 2>/dev/null || true
+    sudo chmod 644 .git/FETCH_HEAD 2>/dev/null || true
+    
     log_success "Git permissions fixed"
 }
 
