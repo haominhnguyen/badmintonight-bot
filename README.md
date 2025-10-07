@@ -135,6 +135,7 @@ FRONTEND_URL=https://yourdomain.com
 - `fix-nginx-completely.sh` - Fix nginx completely
 - `fix-nginx-simple.sh` - Fix nginx with simple config
 - `test-api-endpoints.sh` - Test API endpoints
+- `fix-ssl-https.sh` - Fix SSL and HTTPS protocol
 - `fix-api-docs.sh` - Fix API Docs access
 - `debug-api-docs.sh` - Debug API Docs issues
 - `check-containers.sh` - Check container status
