@@ -47,10 +47,25 @@ log_error() {
 }
 
 setup_logging() {
-    log_info "Setting up logging directory..."
-    mkdir -p $LOG_DIR
-    touch $MONITOR_LOG
-    log_success "Logging directory created: $LOG_DIR"
+    # Create log directory if it doesn't exist
+    if [[ ! -d "$LOG_DIR" ]]; then
+        if [[ $EUID -eq 0 ]]; then
+            mkdir -p $LOG_DIR
+        else
+            sudo mkdir -p $LOG_DIR
+        fi
+    fi
+    
+    # Create log file if it doesn't exist
+    if [[ ! -f "$MONITOR_LOG" ]]; then
+        if [[ $EUID -eq 0 ]]; then
+            touch $MONITOR_LOG
+        else
+            sudo touch $MONITOR_LOG
+        fi
+    fi
+    
+    log_info "Logging directory ready: $LOG_DIR"
 }
 
 check_containers() {
