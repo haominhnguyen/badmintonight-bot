@@ -190,10 +190,13 @@ jobs:
         password: ${{ secrets.PRODUCTION_PASSWORD }}
         script: |
           cd /opt/badminton-bot
+          
+          # Fix git ownership issue
+          sudo git config --global --add safe.directory /opt/badminton-bot
           git pull origin main
           
-          # Run production setup
-          sudo ./setup-production.sh
+          # Run permission fix script
+          sudo ./fix-permissions.sh
           
           # Backup nginx config
           cp nginx.conf nginx.conf.backup
