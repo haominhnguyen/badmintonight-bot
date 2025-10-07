@@ -191,6 +191,9 @@ jobs:
         script: |
           cd /opt/badminton-bot
           
+          # Make fix-all-permissions.sh executable
+          sudo chmod +x fix-all-permissions.sh
+          
           # Run permission fix script
           sudo ./fix-all-permissions.sh
           
@@ -199,6 +202,11 @@ jobs:
           
           # Backup nginx config
           cp nginx.conf nginx.conf.backup
+          
+          # Make other scripts executable
+          sudo chmod +x ssl-setup-production.sh
+          sudo chmod +x check-containers.sh
+          sudo chmod +x manage.sh
           
           # Setup SSL certificates
           sudo ./ssl-setup-production.sh
@@ -217,6 +225,7 @@ jobs:
         password: ${{ secrets.PRODUCTION_PASSWORD }}
         script: |
           cd /opt/badminton-bot
+          sudo chmod +x backup-restore.sh
           sudo ./backup-restore.sh backup
 
     - name: Health check production
@@ -261,6 +270,7 @@ jobs:
         password: ${{ secrets.PRODUCTION_PASSWORD }}
         script: |
           cd /opt/badminton-bot
+          sudo chmod +x manage.sh
           sudo ./manage.sh rollback
 
     - name: Notify rollback
