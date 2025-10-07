@@ -52,10 +52,10 @@ main() {
     log_info "Running database migrations..."
     sudo docker exec badminton-bot-prod npx prisma migrate deploy || echo "Migration failed, but continuing..."
     
-    # Fix system nginx
-    log_info "Fixing system nginx..."
-    sudo chmod +x fix-system-nginx.sh
-    sudo ./fix-system-nginx.sh
+    # Fix nginx proxy
+    log_info "Fixing nginx proxy..."
+    sudo chmod +x fix-nginx-proxy.sh
+    sudo ./fix-nginx-proxy.sh
     
     # Check containers
     log_info "Checking containers..."
