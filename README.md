@@ -131,7 +131,9 @@ FRONTEND_URL=https://yourdomain.com
 - `fix-all-permissions.sh` - Fix file permissions
 - `fix-logs-permissions.sh` - Fix logs permissions
 - `remove-nginx-completely.sh` - Remove nginx from server
+- `force-remove-nginx.sh` - Force remove nginx completely
 - `check-nginx-status.sh` - Check nginx status
+- `check-nginx-processes.sh` - Check nginx processes
 - `check-containers.sh` - Check container status
 - `manage.sh` - Container management
 
