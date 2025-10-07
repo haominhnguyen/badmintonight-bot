@@ -25,10 +25,11 @@ DOCKER_USERNAME=haominhnguyen
 DOCKER_PASSWORD=your_docker_hub_access_token
 ```
 
-### 4. Notification Secrets
+### 4. Notification Secrets (Optional)
 ```
 SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK
 ```
+**Note**: SLACK_WEBHOOK_URL là optional. Nếu không có, workflow vẫn chạy bình thường nhưng không gửi Slack notifications.
 
 ## Cách cấu hình GitHub Secrets
 
