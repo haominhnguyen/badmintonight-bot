@@ -132,6 +132,7 @@ FRONTEND_URL=https://yourdomain.com
 - `fix-logs-permissions.sh` - Fix logs permissions
 - `setup-nginx.sh` - Setup nginx for port 80
 - `fix-nginx-setup.sh` - Fix nginx setup issues
+- `fix-nginx-completely.sh` - Fix nginx completely
 - `fix-api-docs.sh` - Fix API Docs access
 - `debug-api-docs.sh` - Debug API Docs issues
 - `check-containers.sh` - Check container status
