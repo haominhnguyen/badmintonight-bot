@@ -219,33 +219,21 @@ jobs:
           # Setup SSL certificates
           sudo ./ssl-setup-production.sh
           
-          # Fix logs permissions
-          sudo chmod +x fix-logs-permissions.sh
-          sudo ./fix-logs-permissions.sh
+          # Start services
+          sudo docker-compose -f docker-compose.prod.yml up -d
+          sleep 30
           
-          # Reset database completely
-          sudo chmod +x reset-database.sh
-          sudo ./reset-database.sh
+          # Backup database before migration
+          sudo chmod +x backup-before-deploy.sh
+          sudo ./backup-before-deploy.sh
+          
+          # Run database migrations
+          sudo chmod +x migrate-database.sh
+          sudo ./migrate-database.sh
           
           # Fix nginx service
           sudo chmod +x fix-nginx-service.sh
           sudo ./fix-nginx-service.sh
-          
-          # Debug application
-          sudo chmod +x debug-application.sh
-          sudo ./debug-application.sh
-          
-          # Fix application startup if needed
-          sudo chmod +x fix-application-startup.sh
-          sudo ./fix-application-startup.sh
-          
-          # Update database connection in .env file
-          if [[ -f ".env" ]]; then
-            cp .env .env.backup
-            sed -i 's|DATABASE_URL=postgresql://badminton_user:badminton_secure_password_123@badminton-postgres-prod:5432/badminton_bot|DATABASE_URL=postgresql://badminton_user:badminton_secure_password_123@postgres:5432/badminton_bot|g' .env
-            echo "DATABASE_URL updated in .env file"
-            grep "DATABASE_URL" .env
-          fi
           
           # Check containers
           sudo chmod +x check-containers.sh
