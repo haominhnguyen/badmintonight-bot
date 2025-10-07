@@ -130,7 +130,7 @@ FRONTEND_URL=https://yourdomain.com
 - `deploy.sh` - Complete deployment
 - `fix-all-permissions.sh` - Fix file permissions
 - `fix-logs-permissions.sh` - Fix logs permissions
-- `fix-nginx-ssl-error.sh` - Fix nginx SSL errors
+- `setup-nginx.sh` - Setup nginx configuration
 - `check-containers.sh` - Check container status
 - `manage.sh` - Container management
 

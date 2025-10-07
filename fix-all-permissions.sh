@@ -121,7 +121,7 @@ VERIFY_TOKEN=your_verify_token_here
 JWT_SECRET=your_jwt_secret_here
 JWT_EXPIRES_IN=24h
 ADMIN_PASSWORD=your_admin_password_here
-ENCRYPTION_KEY=your_encryption_key_here
+# ENCRYPTION_KEY removed
 COURT_PRICE=120000
 SHUTTLE_PRICE=25000
 FEMALE_PRICE=40000

@@ -63,13 +63,12 @@ main() {
         log_error "Nginx configuration is invalid"
     fi
     
-    # Check for SSL references
-    log_info "Checking for SSL references..."
-    if grep -q "ssl\|cert\|key\|letsencrypt\|443" /etc/nginx/nginx.conf; then
-        log_warning "Found SSL references in nginx config:"
-        grep -n "ssl\|cert\|key\|letsencrypt\|443" /etc/nginx/nginx.conf
+    # Check nginx configuration is HTTP-only
+    log_info "Checking nginx configuration is HTTP-only..."
+    if grep -q "listen 80" /etc/nginx/nginx.conf; then
+        log_success "Nginx is configured for HTTP-only (port 80)"
     else
-        log_success "No SSL references found in nginx config"
+        log_warning "Nginx configuration may not be HTTP-only"
     fi
     
     # Check HTTP connectivity
@@ -84,14 +83,12 @@ main() {
     log_info "Checking port bindings..."
     echo "Port 80: $(sudo netstat -tlnp | grep :80 | wc -l) listeners"
     echo "Port 3100: $(sudo netstat -tlnp | grep :3100 | wc -l) listeners"
-    echo "Port 443: $(sudo netstat -tlnp | grep :443 | wc -l) listeners"
     
     # Show nginx configuration summary
     log_info "Nginx configuration summary:"
     echo "  - Configuration file: /etc/nginx/nginx.conf"
     echo "  - Service status: $(sudo systemctl is-active nginx)"
     echo "  - Port 80: $(sudo netstat -tlnp | grep :80 | wc -l) listeners"
-    echo "  - Port 443: $(sudo netstat -tlnp | grep :443 | wc -l) listeners"
     echo "  - App container: $(sudo docker ps --format '{{.Names}}' | grep badminton-bot-prod || echo 'Not running')"
     
     # Test different endpoints

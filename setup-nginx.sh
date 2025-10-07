@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Fix Nginx SSL certificate error script
-# This script completely removes SSL references and creates HTTP-only nginx config
+# Setup nginx script
+# This script sets up nginx with HTTP-only configuration
 
 set -e
 
@@ -31,36 +31,21 @@ log_error() {
 
 # Main function
 main() {
-    log_info "Fixing Nginx SSL certificate error..."
+    log_info "Setting up nginx with HTTP-only configuration..."
     
     # Stop nginx service
     log_info "Stopping nginx service..."
     sudo systemctl stop nginx || true
     
-    # Remove any existing SSL certificates and configs
-    log_info "Cleaning up SSL certificates..."
-    sudo rm -rf /etc/letsencrypt/ || true
+    # Remove any existing configs
+    log_info "Removing any existing configs..."
     sudo rm -rf /etc/nginx/sites-enabled/* || true
     sudo rm -rf /etc/nginx/sites-available/* || true
+    sudo rm -rf /etc/nginx/conf.d/* || true
     
-    # Get app container IP
-    log_info "Getting app container IP..."
-    APP_IP="127.0.0.1"
-    if sudo docker ps --format "{{.Names}}" | grep -q "badminton-bot-prod"; then
-        APP_IP=$(sudo docker inspect badminton-bot-prod | grep -o '"IPAddress": "[^"]*"' | head -1 | cut -d'"' -f4)
-        if [[ -z "$APP_IP" ]]; then
-            log_warning "Could not get app container IP, using localhost"
-            APP_IP="127.0.0.1"
-        else
-            log_success "App container IP: $APP_IP"
-        fi
-    else
-        log_warning "App container not running, using localhost"
-    fi
-    
-    # Create completely clean HTTP-only nginx configuration
-    log_info "Creating HTTP-only nginx configuration..."
-    sudo cp nginx-clean.conf /etc/nginx/nginx.conf
+    # Copy nginx configuration
+    log_info "Copying nginx configuration..."
+    sudo cp nginx.conf /etc/nginx/nginx.conf
     
     # Test nginx configuration
     log_info "Testing nginx configuration..."
@@ -68,8 +53,6 @@ main() {
         log_success "Nginx configuration is valid"
     else
         log_error "Nginx configuration test failed"
-        log_info "Nginx configuration content:"
-        sudo cat /etc/nginx/nginx.conf
         return 1
     fi
     
@@ -86,8 +69,6 @@ main() {
         log_success "Nginx service is running"
     else
         log_error "Nginx service failed to start"
-        log_info "Nginx service status:"
-        sudo systemctl status nginx --no-pager
         return 1
     fi
     
@@ -99,11 +80,7 @@ main() {
         log_warning "HTTP connectivity test failed"
     fi
     
-    # Show nginx status
-    log_info "Nginx service status:"
-    sudo systemctl status nginx --no-pager
-    
-    log_success "Nginx SSL error fixed! Nginx is now running HTTP-only for Cloudflare."
+    log_success "Nginx setup completed!"
 }
 
 # Run main function

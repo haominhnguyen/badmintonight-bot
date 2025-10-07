@@ -46,7 +46,7 @@ make_scripts_executable() {
     log_info "Making scripts executable..."
     
     chmod +x deploy.sh
-    chmod +x ssl-setup.sh
+    # SSL setup removed
     chmod +x backup-restore.sh
     chmod +x monitor.sh
     chmod +x auto-deploy.sh
@@ -63,11 +63,7 @@ deploy() {
     log_success "Deployment completed!"
 }
 
-setup_ssl() {
-    log_info "Setting up SSL certificate..."
-    ./ssl-setup.sh
-    log_success "SSL setup completed!"
-}
+# SSL setup removed
 
 backup() {
     log_info "Starting backup..."
@@ -310,7 +306,7 @@ show_usage() {
     echo ""
     echo "Commands:"
     echo "  deploy              - Deploy the application (first time setup)"
-    echo "  ssl                 - Setup SSL certificate"
+    # SSL setup removed
     echo "  start               - Start all services"
     echo "  stop                - Stop all services"
     echo "  restart             - Restart all services"
@@ -338,7 +334,7 @@ show_usage() {
     echo ""
     echo "Examples:"
     echo "  $0 deploy           # First time deployment"
-    echo "  $0 ssl              # Setup SSL certificate"
+    # SSL setup removed
     echo "  $0 status           # Check status"
     echo "  $0 logs app 100     # Show last 100 lines of app logs"
     echo "  $0 backup           # Create backup"
@@ -356,10 +352,7 @@ case "$1" in
         make_scripts_executable
         deploy
         ;;
-    ssl)
-        check_root
-        setup_ssl
-        ;;
+    # SSL setup removed
     start)
         check_root
         start
