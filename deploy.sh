@@ -62,6 +62,11 @@ main() {
     sudo chmod +x fix-api-docs.sh
     sudo ./fix-api-docs.sh
     
+    # Test API endpoints
+    log_info "Testing API endpoints..."
+    sudo chmod +x test-api-endpoints.sh
+    sudo ./test-api-endpoints.sh
+    
     # Check containers
     log_info "Checking containers..."
     sudo chmod +x check-containers.sh

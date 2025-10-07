@@ -48,7 +48,7 @@ make_scripts_executable() {
     chmod +x deploy.sh
     # SSL setup removed
     chmod +x backup-restore.sh
-    chmod +x monitor.sh
+    # monitor.sh removed
     chmod +x auto-deploy.sh
     chmod +x rollback.sh
     chmod +x health-check.sh
@@ -93,12 +93,12 @@ list_backups() {
 
 status() {
     log_info "Checking system status..."
-    ./monitor.sh status
+    ./check-containers.sh
 }
 
 monitor() {
     log_info "Starting continuous monitoring..."
-    ./monitor.sh monitor
+    ./check-containers.sh
 }
 
 logs() {
@@ -106,7 +106,7 @@ logs() {
     local lines=${2:-50}
     
     log_info "Showing logs for $service..."
-    ./monitor.sh logs $service $lines
+    sudo docker logs $service --tail $lines
 }
 
 restart() {
