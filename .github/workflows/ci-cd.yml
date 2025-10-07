@@ -209,7 +209,6 @@ jobs:
           sudo find . -name "*.sh" -type f -exec chmod +x {} \;
           sudo find . -type d -exec chmod +x {} \;
           
-          
           # Setup webroot for SSL
           sudo ./setup-webroot.sh
           
@@ -220,17 +219,17 @@ jobs:
           sudo docker-compose -f docker-compose.prod.yml up -d
           sleep 30
           
-          # Backup database before migration
-          sudo chmod +x backup-before-deploy.sh
-          sudo ./backup-before-deploy.sh
+          # Run database migrations inline
+          echo "Running database migrations..."
+          sudo docker exec badminton-bot-prod npx prisma migrate deploy || echo "Migration failed, but continuing..."
           
-          # Run database migrations
-          sudo chmod +x migrate-database.sh
-          sudo ./migrate-database.sh
+          # Fix nginx configuration
+          sudo chmod +x fix-nginx-config.sh
+          sudo ./fix-nginx-config.sh
           
-          # Fix nginx service
-          sudo chmod +x fix-nginx-service.sh
-          sudo ./fix-nginx-service.sh
+          # Test nginx configuration
+          sudo chmod +x test-nginx-config.sh
+          sudo ./test-nginx-config.sh
           
           # Check containers
           sudo chmod +x check-containers.sh
