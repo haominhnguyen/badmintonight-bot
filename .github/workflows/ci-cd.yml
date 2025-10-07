@@ -209,29 +209,9 @@ jobs:
           sudo find . -name "*.sh" -type f -exec chmod +x {} \;
           sudo find . -type d -exec chmod +x {} \;
           
-          # Note: Using Cloudflare for HTTPS, no SSL setup needed
-          
-          # Start services
-          sudo docker-compose -f docker-compose.prod.yml up -d
-          sleep 30
-          
-          # Run database migrations inline
-          echo "Running database migrations..."
-          sudo docker exec badminton-bot-prod npx prisma migrate deploy || echo "Migration failed, but continuing..."
-          
-          # Fix nginx configuration
-          sudo chmod +x fix-nginx-config.sh
-          sudo ./fix-nginx-config.sh
-          
-          # Test HTTP connectivity
-          sudo chmod +x test-http-connectivity.sh
-          sudo ./test-http-connectivity.sh
-          
-          # Check containers
-          sudo chmod +x check-containers.sh
-          sudo ./check-containers.sh
-          sudo chmod +x manage.sh
-          sudo ./manage.sh status
+          # Run deployment
+          sudo chmod +x deploy.sh
+          sudo ./deploy.sh
 
     - name: Create backup after deployment
       uses: appleboy/ssh-action@v1.0.3
