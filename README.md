@@ -79,11 +79,45 @@ FRONTEND_URL=https://yourdomain.com
 
 ### Cloudflare Setup
 
-1. Add your domain to Cloudflare
-2. Update DNS records to point to your server IP
-3. Enable proxy (Orange cloud)
-4. Set SSL mode to "Full (strict)"
-5. Enable "Always Use HTTPS"
+1. **Add your domain to Cloudflare**
+2. **Update DNS records to point to your server IP**
+3. **Enable proxy (Orange cloud)**
+4. **Set SSL mode to "Full (strict)"**
+5. **Enable "Always Use HTTPS"**
+
+#### **Universal Certificate Setup:**
+
+1. **Add TXT records for certificate validation:**
+   ```bash
+   # Run setup script
+   chmod +x setup-cloudflare-dns.sh
+   ./setup-cloudflare-dns.sh
+   ```
+
+2. **Add these TXT records in Cloudflare Dashboard:**
+   ```
+   Record 1:
+   Type: TXT
+   Name: _acme-challenge.haominhnguyen.shop
+   Content: usEnvqo8vxGxhbjPz0TmEcxXmCjPD9rTLflbaSvc4mc
+   
+   Record 2:
+   Type: TXT
+   Name: _acme-challenge.haominhnguyen.shop
+   Content: -NKvGZr3GQU1ulZktMF1RPRxILL4HQrWjmKlbslgu5Y
+   ```
+
+3. **Verify DNS records:**
+   ```bash
+   chmod +x verify-cloudflare-dns.sh
+   ./verify-cloudflare-dns.sh
+   ```
+
+4. **Test HTTPS connectivity:**
+   ```bash
+   chmod +x test-https-connectivity.sh
+   ./test-https-connectivity.sh
+   ```
 
 ## API Endpoints
 
@@ -96,8 +130,7 @@ FRONTEND_URL=https://yourdomain.com
 - `deploy.sh` - Complete deployment
 - `fix-all-permissions.sh` - Fix file permissions
 - `fix-logs-permissions.sh` - Fix logs permissions
-- `fix-nginx-config.sh` - Fix nginx configuration
-- `test-http-connectivity.sh` - Test HTTP connectivity
+- `fix-nginx-ssl-error.sh` - Fix nginx SSL errors
 - `check-containers.sh` - Check container status
 - `manage.sh` - Container management
 
