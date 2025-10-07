@@ -79,6 +79,16 @@ create_directories() {
     sudo mkdir -p $BACKUP_DIR
     sudo chown $USER:$USER $BACKUP_DIR
     
+    # Create logs directory
+    sudo mkdir -p ./logs
+    sudo chmod 755 ./logs
+    sudo chown -R 1001:1001 ./logs
+    
+    # Create log files
+    sudo touch ./logs/error.log ./logs/access.log ./logs/app.log
+    sudo chmod 644 ./logs/*.log
+    sudo chown -R 1001:1001 ./logs
+    
     log_success "Directories created"
 }
 

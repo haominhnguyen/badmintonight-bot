@@ -26,6 +26,10 @@ RUN npx prisma generate
 COPY src ./src
 COPY public ./public
 
+# Create logs directory and set permissions
+RUN mkdir -p /app/logs
+RUN chmod 755 /app/logs
+
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nodejs -u 1001

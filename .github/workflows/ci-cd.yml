@@ -216,6 +216,10 @@ jobs:
           # Setup SSL certificates
           sudo ./ssl-setup-production.sh
           
+          # Fix logs permissions
+          sudo chmod +x fix-logs-permissions.sh
+          sudo ./fix-logs-permissions.sh
+          
           # Start services
           sudo docker-compose -f docker-compose.prod.yml up -d
           sleep 30
