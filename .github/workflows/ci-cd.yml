@@ -212,7 +212,7 @@ jobs:
         curl -f https://haominhnguyen.shop/health || exit 1
 
     - name: Notify deployment success
-      if: success() && ${{ secrets.SLACK_WEBHOOK_URL }}
+      if: success()
       uses: 8398a7/action-slack@v3
       with:
         status: success
@@ -220,9 +220,10 @@ jobs:
         text: 'Production deployment successful: https://haominhnguyen.shop'
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      continue-on-error: true
 
     - name: Notify deployment failure
-      if: failure() && ${{ secrets.SLACK_WEBHOOK_URL }}
+      if: failure()
       uses: 8398a7/action-slack@v3
       with:
         status: failure
@@ -230,6 +231,7 @@ jobs:
         text: 'Production deployment failed! Check logs immediately.'
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      continue-on-error: true
 
   rollback:
     name: Rollback
@@ -249,7 +251,6 @@ jobs:
           ./manage.sh rollback
 
     - name: Notify rollback
-      if: ${{ secrets.SLACK_WEBHOOK_URL }}
       uses: 8398a7/action-slack@v3
       with:
         status: warning
@@ -257,3 +258,4 @@ jobs:
         text: 'Production rollback executed due to deployment failure.'
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      continue-on-error: true

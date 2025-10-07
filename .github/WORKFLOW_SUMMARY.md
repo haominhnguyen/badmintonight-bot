@@ -264,13 +264,17 @@ cd /opt/badminton-bot
 # Lỗi thường gặp:
 # ❌ if: secrets.SLACK_WEBHOOK_URL
 # ❌ if: success() && secrets.SLACK_WEBHOOK_URL
-# ✅ if: ${{ secrets.SLACK_WEBHOOK_URL }}
-# ✅ if: success() && ${{ secrets.SLACK_WEBHOOK_URL }}
+# ❌ if: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-# Secrets trong if conditions:
-# - Phải sử dụng ${{ }} syntax
-# - Không thể sử dụng trực tiếp secrets
-# - Cần wrap trong expression
+# Giải pháp: Sử dụng continue-on-error
+# ✅ if: success() + continue-on-error: true
+# ✅ if: failure() + continue-on-error: true
+# ✅ continue-on-error: true (cho rollback)
+
+# Secrets trong notifications:
+# - Không thể check secrets trong if conditions
+# - Sử dụng continue-on-error để tránh fail
+# - Step sẽ skip nếu không có secret
 ```
 
 ### 7. Workflow Validation
