@@ -41,8 +41,8 @@ update_database_url() {
         # Backup current .env
         cp .env .env.backup
         
-        # Update DATABASE_URL
-        sed -i 's|DATABASE_URL=postgresql://badminton_user:badminton_secure_password_123@postgres:5432/badminton_bot|DATABASE_URL=postgresql://badminton_user:badminton_secure_password_123@badminton-postgres-prod:5432/badminton_bot|g' .env
+        # Update DATABASE_URL (ensure it uses service name 'postgres')
+        sed -i 's|DATABASE_URL=postgresql://badminton_user:badminton_secure_password_123@badminton-postgres-prod:5432/badminton_bot|DATABASE_URL=postgresql://badminton_user:badminton_secure_password_123@postgres:5432/badminton_bot|g' .env
         
         log_success "DATABASE_URL updated in .env file"
         

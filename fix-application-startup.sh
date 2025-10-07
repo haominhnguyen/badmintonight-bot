@@ -43,7 +43,7 @@ fix_environment_variables() {
         cat > .env << 'EOF'
 # Production Environment Variables
 POSTGRES_PASSWORD=badminton_secure_password_123
-DATABASE_URL=postgresql://badminton_user:badminton_secure_password_123@badminton-postgres-prod:5432/badminton_bot?schema=public
+DATABASE_URL=postgresql://badminton_user:badminton_secure_password_123@postgres:5432/badminton_bot?schema=public
 NODE_ENV=production
 PORT=3100
 API_PORT=3101
