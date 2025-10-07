@@ -47,29 +47,7 @@ main() {
         log_error "App container is not running"
     fi
     
-    # Check nginx service
-    log_info "Checking nginx service..."
-    if sudo systemctl is-active nginx | grep -q "active"; then
-        log_success "Nginx service is running"
-    else
-        log_error "Nginx service is not running"
-    fi
-    
-    # Check nginx configuration
-    log_info "Checking nginx configuration..."
-    if sudo nginx -t; then
-        log_success "Nginx configuration is valid"
-    else
-        log_error "Nginx configuration is invalid"
-    fi
-    
-    # Check nginx configuration is HTTP-only
-    log_info "Checking nginx configuration is HTTP-only..."
-    if grep -q "listen 80" /etc/nginx/nginx.conf; then
-        log_success "Nginx is configured for HTTP-only (port 80)"
-    else
-        log_warning "Nginx configuration may not be HTTP-only"
-    fi
+    # Nginx checks removed
     
     # Check HTTP connectivity
     log_info "Checking HTTP connectivity..."
@@ -81,15 +59,12 @@ main() {
     
     # Check port bindings
     log_info "Checking port bindings..."
-    echo "Port 80: $(sudo netstat -tlnp | grep :80 | wc -l) listeners"
     echo "Port 3100: $(sudo netstat -tlnp | grep :3100 | wc -l) listeners"
     
-    # Show nginx configuration summary
-    log_info "Nginx configuration summary:"
-    echo "  - Configuration file: /etc/nginx/nginx.conf"
-    echo "  - Service status: $(sudo systemctl is-active nginx)"
-    echo "  - Port 80: $(sudo netstat -tlnp | grep :80 | wc -l) listeners"
+    # Show deployment summary
+    log_info "Deployment summary:"
     echo "  - App container: $(sudo docker ps --format '{{.Names}}' | grep badminton-bot-prod || echo 'Not running')"
+    echo "  - PostgreSQL container: $(sudo docker ps --format '{{.Names}}' | grep badminton-postgres-prod || echo 'Not running')"
     
     # Test different endpoints
     log_info "Testing different endpoints..."

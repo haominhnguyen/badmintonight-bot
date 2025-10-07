@@ -16,7 +16,7 @@ A Telegram bot for managing badminton court bookings and sessions.
 - **Database**: PostgreSQL
 - **ORM**: Prisma
 - **Containerization**: Docker, Docker Compose
-- **Reverse Proxy**: Nginx
+- **Reverse Proxy**: Cloudflare
 - **CI/CD**: GitHub Actions
 - **SSL**: Cloudflare
 
@@ -130,7 +130,8 @@ FRONTEND_URL=https://yourdomain.com
 - `deploy.sh` - Complete deployment
 - `fix-all-permissions.sh` - Fix file permissions
 - `fix-logs-permissions.sh` - Fix logs permissions
-- `setup-nginx.sh` - Setup nginx configuration
+- `remove-nginx-completely.sh` - Remove nginx from server
+- `check-nginx-status.sh` - Check nginx status
 - `check-containers.sh` - Check container status
 - `manage.sh` - Container management
 
@@ -138,7 +139,6 @@ FRONTEND_URL=https://yourdomain.com
 
 - **app**: Main application (Node.js)
 - **postgres**: Database (PostgreSQL)
-- **nginx**: Reverse proxy (Nginx)
 
 ## CI/CD
 

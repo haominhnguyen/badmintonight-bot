@@ -49,21 +49,13 @@ main() {
         log_warning "App container is not running"
     fi
     
-    # Check nginx service
-    log_info "Checking nginx service..."
-    if sudo systemctl is-active nginx | grep -q "active"; then
-        log_success "Nginx service is running"
-    else
-        log_warning "Nginx service is not running"
-    fi
+    # Nginx check removed
     
     # Show all containers
     log_info "All containers:"
     sudo docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
     
-    # Show nginx service status
-    log_info "Nginx service status:"
-    sudo systemctl status nginx --no-pager
+    # Nginx status removed
     
     log_success "Container status check completed!"
 }
