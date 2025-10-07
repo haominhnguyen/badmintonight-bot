@@ -55,6 +55,8 @@ Name: SLACK_WEBHOOK_URL
 Value: https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK
 ```
 
+**Note**: SLACK_WEBHOOK_URL là optional. Nếu không có, workflow vẫn chạy bình thường nhưng không gửi Slack notifications.
+
 ## Cấu hình Server
 
 ### 1. Chuẩn bị Server
