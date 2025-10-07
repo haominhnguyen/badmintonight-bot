@@ -19,7 +19,13 @@ STAGING_USERNAME=root
 STAGING_SSH_KEY=your-private-ssh-key
 ```
 
-### 3. Notification Secrets
+### 3. Docker Hub Secrets
+```
+DOCKER_USERNAME=haominhnguyen
+DOCKER_PASSWORD=your_docker_hub_access_token
+```
+
+### 4. Notification Secrets
 ```
 SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK
 ```
@@ -68,6 +74,16 @@ cat ~/.ssh/github_actions_ed25519.pub >> ~/.ssh/authorized_keys
 cat ~/.ssh/github_actions_ed25519
 
 # Thêm vào GitHub Secrets với tên: PRODUCTION_SSH_KEY
+```
+
+### Bước 4: Cấu hình Docker Hub Secrets
+```bash
+# Tạo Docker Hub Access Token
+# Vào https://hub.docker.com → Account Settings → Security → New Access Token
+
+# Thêm vào GitHub Secrets:
+# DOCKER_USERNAME=haominhnguyen
+# DOCKER_PASSWORD=your_docker_hub_access_token
 ```
 
 ## Environment Variables
