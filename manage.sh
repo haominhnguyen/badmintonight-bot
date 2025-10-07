@@ -48,6 +48,9 @@ make_scripts_executable() {
     chmod +x ssl-setup.sh
     chmod +x backup-restore.sh
     chmod +x monitor.sh
+    chmod +x auto-deploy.sh
+    chmod +x rollback.sh
+    chmod +x health-check.sh
     chmod +x manage.sh
     
     log_success "Scripts made executable"
@@ -264,6 +267,11 @@ show_usage() {
     echo "  list-backups        - List available backups"
     echo "  cleanup             - Clean up system"
     echo "  info                - Show system information"
+    echo "  health-check        - Perform comprehensive health check"
+    echo "  quick-check         - Perform quick health check"
+    echo "  rollback <date>     - Rollback to specific backup"
+    echo "  quick-rollback      - Rollback to latest backup"
+    echo "  auto-deploy         - Run automated deployment"
     echo ""
     echo "Available services for logs:"
     echo "  app                 - Application logs"
@@ -279,6 +287,9 @@ show_usage() {
     echo "  $0 logs app 100     # Show last 100 lines of app logs"
     echo "  $0 backup           # Create backup"
     echo "  $0 restore 20240101_120000  # Restore from backup"
+    echo "  $0 health-check     # Comprehensive health check"
+    echo "  $0 rollback 20240101_120000  # Rollback to backup"
+    echo "  $0 auto-deploy      # Automated deployment"
     echo ""
 }
 
@@ -335,6 +346,24 @@ case "$1" in
         ;;
     info)
         show_info
+        ;;
+    health-check)
+        ./health-check.sh health-check
+        ;;
+    quick-check)
+        ./health-check.sh quick-check
+        ;;
+    rollback)
+        check_root
+        ./rollback.sh rollback $2
+        ;;
+    quick-rollback)
+        check_root
+        ./rollback.sh quick-rollback
+        ;;
+    auto-deploy)
+        check_root
+        ./auto-deploy.sh deploy
         ;;
     *)
         show_usage

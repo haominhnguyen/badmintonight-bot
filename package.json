@@ -16,7 +16,18 @@
     "docker:build": "docker-compose build",
     "docker:up": "docker-compose up -d --build app",
     "docker:down": "docker-compose down",
-    "docker:logs": "docker-compose logs -f"
+    "docker:logs": "docker-compose logs -f",
+    "test": "echo \"No tests specified\" && exit 0",
+    "lint": "echo \"No linting configured\" && exit 0",
+    "audit": "npm audit --audit-level moderate",
+    "health": "curl -f http://localhost:3100/health || exit 1",
+    "deploy:staging": "docker-compose -f docker-compose.staging.yml up -d",
+    "deploy:production": "docker-compose -f docker-compose.prod.yml up -d",
+    "backup": "./backup-restore.sh backup",
+    "restore": "./backup-restore.sh restore",
+    "rollback": "./rollback.sh rollback",
+    "health-check": "./health-check.sh health-check",
+    "monitor": "./monitor.sh status"
   },
   "dependencies": {
     "express": "^4.18.2",
