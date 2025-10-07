@@ -53,24 +53,9 @@ main() {
         sleep 2
     done
     
-    # Check if SSL certificates exist
-    log_info "Checking SSL certificates..."
-    if [[ -f "/etc/letsencrypt/live/haominhnguyen.shop/fullchain.pem" ]]; then
-        log_success "SSL certificates found, using HTTPS configuration"
-        USE_SSL=true
-    else
-        log_warning "SSL certificates not found, using HTTP-only configuration"
-        USE_SSL=false
-    fi
-    
-    # Use appropriate nginx configuration
-    if [[ "$USE_SSL" == "true" ]]; then
-        log_info "Using SSL-enabled nginx configuration..."
-        cp nginx.conf nginx.conf.current
-    else
-        log_info "Using HTTP-only nginx configuration..."
-        cp nginx-http-test.conf nginx.conf.current
-    fi
+    # Using HTTP-only configuration (Cloudflare handles HTTPS)
+    log_info "Using HTTP-only nginx configuration (Cloudflare handles HTTPS)..."
+    cp nginx.conf nginx.conf.current
     
     # Start nginx container
     log_info "Starting nginx container..."

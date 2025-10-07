@@ -209,11 +209,7 @@ jobs:
           sudo find . -name "*.sh" -type f -exec chmod +x {} \;
           sudo find . -type d -exec chmod +x {} \;
           
-          # Setup webroot for SSL
-          sudo ./setup-webroot.sh
-          
-          # Setup SSL certificates
-          sudo ./ssl-setup-production.sh
+          # Note: Using Cloudflare for HTTPS, no SSL setup needed
           
           # Start services
           sudo docker-compose -f docker-compose.prod.yml up -d
@@ -227,9 +223,9 @@ jobs:
           sudo chmod +x fix-nginx-config.sh
           sudo ./fix-nginx-config.sh
           
-          # Test nginx configuration
-          sudo chmod +x test-nginx-config.sh
-          sudo ./test-nginx-config.sh
+          # Test HTTP connectivity
+          sudo chmod +x test-http-connectivity.sh
+          sudo ./test-http-connectivity.sh
           
           # Check containers
           sudo chmod +x check-containers.sh
