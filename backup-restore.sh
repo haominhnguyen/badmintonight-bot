@@ -58,6 +58,23 @@ backup_database() {
     
     local db_backup_file="$BACKUP_DIR/database_$DATE.sql"
     
+    # Check if container exists and is running
+    local container_exists=false
+    if [[ $EUID -eq 0 ]]; then
+        if docker ps --format "{{.Names}}" | grep -q "badminton-postgres-prod"; then
+            container_exists=true
+        fi
+    else
+        if sudo docker ps --format "{{.Names}}" | grep -q "badminton-postgres-prod"; then
+            container_exists=true
+        fi
+    fi
+    
+    if [[ "$container_exists" == "false" ]]; then
+        log_warning "PostgreSQL container not running, skipping database backup"
+        return 0
+    fi
+    
     # Create database backup
     if [[ $EUID -eq 0 ]]; then
         docker exec badminton-postgres-prod pg_dump \

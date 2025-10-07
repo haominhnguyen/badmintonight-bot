@@ -2,9 +2,9 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, develop, feature/*, hotfix/* ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, develop ]
   workflow_dispatch:
     inputs:
       environment:
@@ -93,7 +93,7 @@ jobs:
     name: Build Docker Image
     runs-on: ubuntu-latest
     needs: test
-    if: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && !inputs.skip_tests) }}
+    if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'workflow_dispatch' && !inputs.skip_tests) }}
 
     steps:
     - name: Checkout code
@@ -182,16 +182,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Create backup before deployment
-      uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: ${{ secrets.PRODUCTION_HOST }}
-        username: ${{ secrets.PRODUCTION_USERNAME }}
-        password: ${{ secrets.PRODUCTION_PASSWORD }}
-        script: |
-          cd /opt/badminton-bot
-          sudo ./backup-restore.sh backup
-
     - name: Deploy to production server
       uses: appleboy/ssh-action@v1.0.3
       with:
@@ -204,7 +194,19 @@ jobs:
           sudo docker-compose -f docker-compose.prod.yml down
           sudo docker-compose -f docker-compose.prod.yml pull
           sudo docker-compose -f docker-compose.prod.yml up -d
+          sleep 30
+          sudo ./check-containers.sh
           sudo ./manage.sh status
+
+    - name: Create backup after deployment
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.PRODUCTION_HOST }}
+        username: ${{ secrets.PRODUCTION_USERNAME }}
+        password: ${{ secrets.PRODUCTION_PASSWORD }}
+        script: |
+          cd /opt/badminton-bot
+          sudo ./backup-restore.sh backup
 
     - name: Health check production
       run: |
