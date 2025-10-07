@@ -175,7 +175,7 @@ jobs:
     name: Deploy to Production
     runs-on: ubuntu-latest
     needs: [build, build-skip-tests]
-    if: ${{ always() && (github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch') && (needs.build.result == 'success' || needs.build-skip-tests.result == 'success') }}
+    if: ${{ always() && (github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch') && (needs.build.result == 'success' || needs['build-skip-tests'].result == 'success') }}
     environment: production
 
     steps:
@@ -212,7 +212,7 @@ jobs:
         curl -f https://haominhnguyen.shop/health || exit 1
 
     - name: Notify deployment success
-      if: success() && secrets.SLACK_WEBHOOK_URL != ''
+      if: success() && secrets.SLACK_WEBHOOK_URL
       uses: 8398a7/action-slack@v3
       with:
         status: success
@@ -222,7 +222,7 @@ jobs:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
     - name: Notify deployment failure
-      if: failure() && secrets.SLACK_WEBHOOK_URL != ''
+      if: failure() && secrets.SLACK_WEBHOOK_URL
       uses: 8398a7/action-slack@v3
       with:
         status: failure
@@ -249,7 +249,7 @@ jobs:
           ./manage.sh rollback
 
     - name: Notify rollback
-      if: secrets.SLACK_WEBHOOK_URL != ''
+      if: secrets.SLACK_WEBHOOK_URL
       uses: 8398a7/action-slack@v3
       with:
         status: warning

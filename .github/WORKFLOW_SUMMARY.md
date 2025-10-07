@@ -245,6 +245,30 @@ cd /opt/badminton-bot
 # → Xem các secrets: PRODUCTION_HOST, PRODUCTION_USERNAME, PRODUCTION_PASSWORD
 ```
 
+### 5. YAML Syntax Issues
+```bash
+# Kiểm tra cú pháp YAML
+# → GitHub Actions → Workflow runs → View logs
+# → Xem lỗi cú pháp nếu có
+
+# Common YAML syntax errors:
+# - Indentation issues
+# - Missing quotes
+# - Invalid expressions
+# - Job name with hyphens
+```
+
+### 6. Workflow Validation
+```bash
+# Test workflow locally
+# → Sử dụng act (GitHub Actions locally)
+# → Hoặc push small changes để test
+
+# Check workflow syntax
+# → GitHub Actions → Workflow runs
+# → Xem "Workflow run" status
+```
+
 ## Liên hệ
 
 Nếu gặp vấn đề:
