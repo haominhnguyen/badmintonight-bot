@@ -223,9 +223,9 @@ jobs:
           sudo chmod +x fix-logs-permissions.sh
           sudo ./fix-logs-permissions.sh
           
-          # Start services
-          sudo docker-compose -f docker-compose.prod.yml up -d
-          sleep 30
+          # Reset database completely
+          sudo chmod +x reset-database.sh
+          sudo ./reset-database.sh
           
           # Fix nginx configuration if needed
           sudo chmod +x fix-nginx.sh
@@ -246,23 +246,6 @@ jobs:
             echo "DATABASE_URL updated in .env file"
             grep "DATABASE_URL" .env
           fi
-          
-          # Test database connection
-          echo "Testing database connection..."
-          if sudo docker ps --format "{{.Names}}" | grep -q "badminton-postgres-prod"; then
-            echo "PostgreSQL container is running"
-            if sudo docker exec badminton-postgres-prod pg_isready -U badminton_user -d badminton_bot; then
-              echo "Database is ready and accepting connections"
-            else
-              echo "Database is not ready"
-            fi
-          else
-            echo "PostgreSQL container is not running"
-          fi
-          
-          # Test nginx configuration
-          sudo chmod +x test-nginx.sh
-          sudo ./test-nginx.sh
           
           # Check containers
           sudo chmod +x check-containers.sh
