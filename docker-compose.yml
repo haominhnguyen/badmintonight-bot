@@ -1,0 +1,44 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: badminton-postgres
+    environment:
+      POSTGRES_DB: badminton_bot
+      POSTGRES_USER: badminton_user
+      POSTGRES_PASSWORD: badminton_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U badminton_user -d badminton_bot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.arm64
+    container_name: badminton-bot
+    environment:
+      DATABASE_URL: "postgresql://badminton_user:badminton_password@postgres:5432/badminton_bot?schema=public"
+      NODE_ENV: production
+      PORT: 3100
+      COURT_PRICE: ${COURT_PRICE:-120000}
+      SHUTTLE_PRICE: ${SHUTTLE_PRICE:-25000}
+      FEMALE_PRICE: ${FEMALE_PRICE:-40000}
+    env_file:
+      - .env
+    ports:
+      - "3100:3100"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

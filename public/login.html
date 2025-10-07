@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>🔐 Login - Badminton Bot</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .login-container {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-width: 400px;
+      width: 100%;
+      margin: 20px;
+    }
+
+    .login-container h1 {
+      color: #667eea;
+      margin-bottom: 10px;
+      text-align: center;
+      font-size: 2em;
+    }
+
+    .login-container p {
+      color: #666;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 15px;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .error-message {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      text-align: center;
+      display: none;
+    }
+
+    .success-message {
+      background: #d4edda;
+      color: #155724;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      text-align: center;
+      display: none;
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      color: #667eea;
+    }
+
+    .demo-credentials {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    .demo-credentials h3 {
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .demo-credentials p {
+      margin: 5px 0;
+      color: #666;
+    }
+
+    .back-link {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .back-link a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .back-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h1>🔐 Đăng Nhập</h1>
+    <p>Badminton Bot - Admin Panel</p>
+    
+    <div id="error-message" class="error-message"></div>
+    <div id="success-message" class="success-message"></div>
+    <div id="loading" class="loading">⏳ Đang đăng nhập...</div>
+    
+    <form id="login-form" onsubmit="login(event)">
+      <div class="form-group">
+        <label for="username">Tên đăng nhập</label>
+        <input type="text" id="username" placeholder="Nhập tên đăng nhập" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Mật khẩu</label>
+        <input type="password" id="password" placeholder="Nhập mật khẩu" required>
+      </div>
+      
+      <button type="submit" class="btn" id="login-btn">🚀 Đăng Nhập</button>
+    </form>
+
+    <div class="demo-credentials">
+      <h3>📋 Thông tin đăng nhập demo:</h3>
+      <p><strong>Username:</strong> admin</p>
+      <p><strong>Password:</strong> 12345</p>
+    </div>
+
+    <div class="back-link">
+      <a href="/">🏠 Quay về Dashboard</a>
+    </div>
+  </div>
+
+  <script src="/js/auth.js"></script>
+  <script>
+    // Redirect to index page - no direct access to login.html
+    window.location.href = '/';
+
+    async function login(event) {
+      event.preventDefault();
+      
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const errorMsg = document.getElementById('error-message');
+      const successMsg = document.getElementById('success-message');
+      const loading = document.getElementById('loading');
+      const loginBtn = document.getElementById('login-btn');
+
+      // Show loading
+      loading.style.display = 'block';
+      loginBtn.disabled = true;
+      errorMsg.style.display = 'none';
+      successMsg.style.display = 'none';
+
+      try {
+        const result = await window.authManager.login(username, password);
+        
+        if (result.success) {
+          successMsg.textContent = '✅ Đăng nhập thành công! Đang chuyển hướng...';
+          successMsg.style.display = 'block';
+          
+          // Redirect to admin panel
+          setTimeout(() => {
+            window.location.href = '/admin.html';
+          }, 1500);
+        } else {
+          errorMsg.textContent = '❌ ' + (result.message || 'Đăng nhập thất bại');
+          errorMsg.style.display = 'block';
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        errorMsg.textContent = '❌ Lỗi kết nối. Vui lòng thử lại.';
+        errorMsg.style.display = 'block';
+      } finally {
+        loading.style.display = 'none';
+        loginBtn.disabled = false;
+      }
+    }
+
+    // Auto-fill demo credentials
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('username').value = 'admin';
+      document.getElementById('password').value = '12345';
+    });
+  </script>
+</body>
+</html>

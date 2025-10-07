@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Login</title>
+</head>
+<body>
+    <h1>Test Login</h1>
+    <button onclick="testLogin()">Test Login</button>
+    <div id="result"></div>
+
+    <script src="/js/auth.js"></script>
+    <script>
+        function testLogin() {
+            console.log('Testing login...');
+            console.log('authManager available:', typeof window.authManager);
+            
+            if (!window.authManager) {
+                document.getElementById('result').innerHTML = '❌ AuthManager not available';
+                return;
+            }
+            
+            window.authManager.login('admin', '12345')
+                .then(result => {
+                    console.log('Login result:', result);
+                    document.getElementById('result').innerHTML = '✅ Login successful: ' + JSON.stringify(result);
+                })
+                .catch(error => {
+                    console.error('Login error:', error);
+                    document.getElementById('result').innerHTML = '❌ Login error: ' + error.message;
+                });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int     @id @default(autoincrement())
+  fbId         String  @unique
+  name         String
+  gender       String  // 'male' | 'female'
+  isAdmin      Boolean @default(false)
+  votes        Vote[]
+  proxyVotes   ProxyVote[] @relation("ProxyVoter")
+  proxyTargets ProxyVote[] @relation("ProxyTarget")
+  createdSessions Session[] @relation("SessionCreator")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  userAuth     UserAuth?
+  permission   UserPermission? @relation(fields: [permissionId], references: [id])
+  permissionId Int?
+
+  @@map("users")
+}
+
+model Session {
+  id           Int      @id @default(autoincrement())
+  name         String?  // Session name (e.g., "Mỹ Đình (01/01/2024)")
+  playDate     DateTime
+  courtCount   Int      @default(0)
+  shuttleCount Int      @default(0)
+  totalCost    Int      @default(0)
+  computed     Boolean  @default(false)
+  status       String   @default("pending") // 'pending' | 'completed' | 'inactive'
+  createdBy    String?  // Creator name (e.g., "admin", "John Doe")
+  createdById  Int?     // Creator user ID for relation
+  createdByUser User?   @relation("SessionCreator", fields: [createdById], references: [id])
+  votes        Vote[]
+  proxyVotes   ProxyVote[]
+  payments     Payment[]
+  logs         AuditLog[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("sessions")
+}
+
+model Vote {
+  id        Int      @id @default(autoincrement())
+  session   Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  sessionId Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  voteType  String   // 'VOTE_YES' | 'COURT' | 'SHUTTLE'
+  createdAt DateTime @default(now())
+
+  @@map("votes")
+}
+
+model ProxyVote {
+  id          Int      @id @default(autoincrement())
+  session     Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  sessionId   Int
+  voter       User     @relation("ProxyVoter", fields: [voterId], references: [id], onDelete: Cascade)
+  voterId     Int
+  targetUser  User     @relation("ProxyTarget", fields: [targetUserId], references: [id], onDelete: Cascade)
+  targetUserId Int
+  voteType    String   // 'VOTE_YES' | 'VOTE_NO'
+  createdAt   DateTime @default(now())
+
+  @@unique([sessionId, targetUserId]) // Mỗi người chỉ được vote hộ 1 lần trong 1 session
+  @@map("proxy_votes")
+}
+
+model Payment {
+  id        Int      @id @default(autoincrement())
+  session   Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  sessionId Int
+  userId    Int
+  userName  String
+  amount    Int      // Số tiền phải trả
+  paid      Boolean  @default(false) // Đã trả hay chưa
+  paidAt    DateTime? // Thời điểm trả
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([sessionId, userId])
+  @@map("payments")
+}
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  session   Session? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+  sessionId Int?
+  action    String
+  payload   Json
+  createdAt DateTime @default(now())
+
+  @@map("audit_logs")
+}
+
+model UserPermission {
+  id        Int     @id @default(autoincrement())
+  name      String  @unique
+  users     User[]  // Opposite relation for User.permission
+  userAuths UserAuth[]
+  @@map("user_permission")
+}
+
+model UserAuth {
+  id       Int    @id @default(autoincrement())
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId   Int    @unique
+  email    String @unique
+  password String
+  permission UserPermission? @relation(fields: [permissionId], references: [id])
+  permissionId Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@map("user_auth")
+}

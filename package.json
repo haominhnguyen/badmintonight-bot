@@ -1,0 +1,47 @@
+{
+  "name": "badminton-bot",
+  "version": "1.0.0",
+  "description": "Messenger Bot for badminton money management",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "api": "node src/api-server.js",
+    "api:dev": "nodemon src/api-server.js",
+    "db:migrate": "prisma migrate dev",
+    "db:generate": "prisma generate",
+    "db:deploy": "prisma migrate deploy",
+    "db:studio": "prisma studio",
+    "db:init": "node scripts/init-db.js",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up -d --build app",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "prisma": "^5.7.1",
+    "@prisma/client": "^5.7.1",
+    "node-cron": "^3.0.3",
+    "axios": "^1.6.2",
+    "dotenv": "^16.3.1",
+    "body-parser": "^1.20.2",
+    "helmet": "^7.1.0",
+    "express-rate-limit": "^7.1.5",
+    "cors": "^2.8.5",
+    "jsonwebtoken": "^9.0.2",
+    "bcryptjs": "^2.4.3",
+    "express-validator": "^7.0.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0",
+    "isomorphic-dompurify": "^2.6.0",
+    "webidl-conversions": "^7.0.0",
+    "whatwg-url": "^11.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "keywords": ["messenger", "bot", "badminton", "money-management"],
+  "author": "Senior Software Engineer",
+  "license": "MIT"
+}
