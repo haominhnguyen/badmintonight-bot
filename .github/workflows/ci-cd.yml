@@ -273,7 +273,14 @@ jobs:
           - Author: ${{ github.actor }}
           - Time: ${{ github.event.head_commit.timestamp }}
           
-          Please check the GitHub Actions logs for more details.
+          🔍 Check GitHub Actions logs:
+          ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          
+          📋 Common fixes:
+          - Check nginx configuration: sudo nginx -t
+          - Check container status: sudo docker ps
+          - Check logs: sudo docker logs badminton-bot-prod
+          - Restart services: sudo systemctl restart nginx
 
   rollback:
     name: Rollback
@@ -312,5 +319,8 @@ jobs:
           - Commit: ${{ github.sha }}
           - Author: ${{ github.actor }}
           - Time: ${{ github.event.head_commit.timestamp }}
+          
+          🔍 Check GitHub Actions logs:
+          ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           
           The application has been restored to the last working version.
