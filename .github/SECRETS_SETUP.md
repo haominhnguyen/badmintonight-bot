@@ -7,16 +7,16 @@ Hướng dẫn cấu hình GitHub Secrets và Environment Variables cho CI/CD pi
 
 ### 1. Production Server Secrets
 ```
-PRODUCTION_HOST=your-production-server-ip
-PRODUCTION_USERNAME=root
-PRODUCTION_SSH_KEY=your-private-ssh-key
+PRODUCTION_HOST=51.120.247.250
+PRODUCTION_USERNAME=your-username
+PRODUCTION_PASSWORD=your-password
 ```
 
-### 2. Staging Server Secrets
+### 2. Staging Server Secrets (Optional - không cần nếu chỉ dùng production)
 ```
 STAGING_HOST=your-staging-server-ip
 STAGING_USERNAME=root
-STAGING_SSH_KEY=your-private-ssh-key
+STAGING_PASSWORD=your-password
 ```
 
 ### 3. Docker Hub Secrets
