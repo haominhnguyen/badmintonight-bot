@@ -1,7 +1,28 @@
 # CI/CD Workflow Summary
 
 ## Tổng quan
-Workflow đã được cấu hình để chỉ build Docker và deploy khi push lên main branch.
+Workflow đã được cấu hình để chỉ build Docker và deploy khi push lên main branch với tính năng cancel builds cũ khi có build mới.
+
+## Concurrency & Cancel Builds
+
+### 1. Auto Cancel Previous Builds
+```yaml
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+```
+
+### 2. Cách hoạt động
+- **Khi push mới**: Tự động cancel build cũ đang chạy
+- **Khi manual trigger**: Cancel build cũ nếu có
+- **Group by**: Workflow name + branch name
+- **Cancel**: Tất cả builds cũ trong cùng group
+
+### 3. Lợi ích
+- ✅ **Tiết kiệm resources**: Không chạy song song nhiều builds
+- ✅ **Deploy mới nhất**: Chỉ deploy commit mới nhất
+- ✅ **Tránh conflict**: Không có nhiều deployments cùng lúc
+- ✅ **Tối ưu thời gian**: Không chờ builds cũ hoàn thành
 
 ## Workflow Triggers
 
@@ -10,6 +31,7 @@ Workflow đã được cấu hình để chỉ build Docker và deploy khi push 
 # Push to main branch
 git push origin main
 # → Tự động: Test → Build → Deploy Production
+# → Cancel builds cũ nếu có
 ```
 
 ### 2. Manual Triggers
