@@ -273,7 +273,7 @@ cd /opt/badminton-bot
 # - Cần wrap trong expression
 ```
 
-### 6. Workflow Validation
+### 7. Workflow Validation
 ```bash
 # Test workflow locally
 # → Sử dụng act (GitHub Actions locally)
