@@ -231,25 +231,49 @@ jobs:
 
     - name: Notify deployment success
       if: success()
-      uses: 8398a7/action-slack@v3
+      uses: dawidd6/action-send-mail@v3
       continue-on-error: true
       with:
-        status: success
-        channel: '#deployments'
-        text: 'Production deployment successful: https://haominhnguyen.shop'
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        server_address: smtp.gmail.com
+        server_port: 587
+        username: ${{ secrets.GMAIL_USERNAME }}
+        password: ${{ secrets.GMAIL_APP_PASSWORD }}
+        subject: "🚀 Badminton Bot Deployment Success"
+        to: haonmdotdev@gmail.com
+        from: ${{ secrets.GMAIL_USERNAME }}
+        body: |
+          Badminton Bot has been successfully deployed to production!
+          
+          Deployment Details:
+          - Branch: ${{ github.ref }}
+          - Commit: ${{ github.sha }}
+          - Author: ${{ github.actor }}
+          - Time: ${{ github.event.head_commit.timestamp }}
+          
+          You can access the application at: https://haominhnguyen.shop
 
     - name: Notify deployment failure
       if: failure()
-      uses: 8398a7/action-slack@v3
+      uses: dawidd6/action-send-mail@v3
       continue-on-error: true
       with:
-        status: failure
-        channel: '#deployments'
-        text: 'Production deployment failed! Check logs immediately.'
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        server_address: smtp.gmail.com
+        server_port: 587
+        username: ${{ secrets.GMAIL_USERNAME }}
+        password: ${{ secrets.GMAIL_APP_PASSWORD }}
+        subject: "❌ Badminton Bot Deployment Failed"
+        to: haonmdotdev@gmail.com
+        from: ${{ secrets.GMAIL_USERNAME }}
+        body: |
+          Badminton Bot deployment has failed!
+          
+          Deployment Details:
+          - Branch: ${{ github.ref }}
+          - Commit: ${{ github.sha }}
+          - Author: ${{ github.actor }}
+          - Time: ${{ github.event.head_commit.timestamp }}
+          
+          Please check the GitHub Actions logs for more details.
 
   rollback:
     name: Rollback
@@ -270,11 +294,23 @@ jobs:
           sudo ./manage.sh rollback
 
     - name: Notify rollback
-      uses: 8398a7/action-slack@v3
+      uses: dawidd6/action-send-mail@v3
       continue-on-error: true
       with:
-        status: warning
-        channel: '#deployments'
-        text: 'Production rollback executed due to deployment failure.'
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        server_address: smtp.gmail.com
+        server_port: 587
+        username: ${{ secrets.GMAIL_USERNAME }}
+        password: ${{ secrets.GMAIL_APP_PASSWORD }}
+        subject: "⚠️ Badminton Bot Rollback Executed"
+        to: haonmdotdev@gmail.com
+        from: ${{ secrets.GMAIL_USERNAME }}
+        body: |
+          Badminton Bot has been rolled back to the previous version due to deployment failure.
+          
+          Rollback Details:
+          - Branch: ${{ github.ref }}
+          - Commit: ${{ github.sha }}
+          - Author: ${{ github.actor }}
+          - Time: ${{ github.event.head_commit.timestamp }}
+          
+          The application has been restored to the last working version.

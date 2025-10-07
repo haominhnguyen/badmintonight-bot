@@ -115,6 +115,37 @@ Automated deployment via GitHub Actions:
 - Deploys to production server
 - Runs database migrations
 - Tests connectivity
+- **Gmail notifications** for deployment status
+
+### Gmail Notifications Setup
+
+1. **Enable 2FA** on your Gmail account
+2. **Generate App Password**:
+   - Go to Google Account Settings
+   - Security → App passwords
+   - Select "Mail" → "Other (Custom name)"
+   - Enter "GitHub Actions"
+   - Copy the 16-character password
+
+3. **Add GitHub Secrets**:
+   - `GMAIL_USERNAME`: `haonmdotdev@gmail.com`
+   - `GMAIL_APP_PASSWORD`: `[your 16-character app password]`
+
+4. **Test Notifications**:
+   ```bash
+   # Run setup script
+   chmod +x setup-gmail-secrets.sh
+   ./setup-gmail-secrets.sh
+   
+   # Test notifications
+   chmod +x test-gmail-notification.sh
+   ./test-gmail-notification.sh
+   ```
+
+**Notification Types:**
+- ✅ **Deployment Success**: Email when deployment completes
+- ❌ **Deployment Failure**: Email when deployment fails
+- ⚠️ **Rollback**: Email when rollback is executed
 
 ## License
 
