@@ -215,6 +215,36 @@ cd /opt/badminton-bot
 ./manage.sh logs nginx
 ```
 
+## Debug Workflow Issues
+
+### 1. Job bị Skip
+```bash
+# Kiểm tra điều kiện if của job
+# → GitHub Actions → Workflow runs → Job details
+# → Xem "Skipped" reason
+```
+
+### 2. Dependencies Issues
+```bash
+# Kiểm tra needs dependencies
+# → Build job phải success
+# → Build-skip-tests job phải success (nếu skip tests)
+```
+
+### 3. Environment Protection
+```bash
+# Kiểm tra environment protection rules
+# → Repository Settings → Environments → production
+# → Xem protection rules
+```
+
+### 4. Secrets Issues
+```bash
+# Kiểm tra secrets có đầy đủ
+# → Repository Settings → Secrets and variables → Actions
+# → Xem các secrets: PRODUCTION_HOST, PRODUCTION_USERNAME, PRODUCTION_PASSWORD
+```
+
 ## Liên hệ
 
 Nếu gặp vấn đề:

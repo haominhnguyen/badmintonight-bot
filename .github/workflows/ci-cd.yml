@@ -175,7 +175,7 @@ jobs:
     name: Deploy to Production
     runs-on: ubuntu-latest
     needs: [build, build-skip-tests]
-    if: ${{ github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' }}
+    if: ${{ always() && (github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch') && (needs.build.result == 'success' || needs.build-skip-tests.result == 'success') }}
     environment: production
 
     steps:
