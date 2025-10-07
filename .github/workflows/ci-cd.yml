@@ -25,6 +25,11 @@ on:
         default: false
         type: boolean
 
+# Cancel previous runs when new one is triggered
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   NODE_VERSION: '20'
   DOCKER_REGISTRY: docker.io
