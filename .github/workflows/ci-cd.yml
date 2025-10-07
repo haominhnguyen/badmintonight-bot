@@ -209,9 +209,6 @@ jobs:
           sudo find . -name "*.sh" -type f -exec chmod +x {} \;
           sudo find . -type d -exec chmod +x {} \;
           
-          # Fix all executable permissions
-          sudo chmod +x fix-all-executable.sh
-          sudo ./fix-all-executable.sh
           
           # Setup webroot for SSL
           sudo ./setup-webroot.sh
