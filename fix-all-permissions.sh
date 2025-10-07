@@ -65,7 +65,13 @@ fix_file_permissions() {
     sudo chmod -R 755 .
     chmod +x *.sh
     
-    log_success "File permissions fixed"
+    # Make all scripts in subdirectories executable
+    find . -name "*.sh" -type f -exec chmod +x {} \;
+    
+    # Make all directories executable (for traversal)
+    find . -type d -exec chmod +x {} \;
+    
+    log_success "All scripts and directories made executable"
 }
 
 create_directories() {

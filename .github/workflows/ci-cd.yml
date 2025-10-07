@@ -204,11 +204,14 @@ jobs:
           sudo cp nginx.conf nginx.conf.backup
           sudo chown $USER:$USER nginx.conf.backup
           
-          # Make other scripts executable
-          sudo chmod +x ssl-setup-production.sh
-          sudo chmod +x check-containers.sh
-          sudo chmod +x manage.sh
-          sudo chmod +x setup-webroot.sh
+          # Make all scripts executable
+          sudo chmod +x *.sh
+          sudo find . -name "*.sh" -type f -exec chmod +x {} \;
+          sudo find . -type d -exec chmod +x {} \;
+          
+          # Fix all executable permissions
+          sudo chmod +x fix-all-executable.sh
+          sudo ./fix-all-executable.sh
           
           # Setup webroot for SSL
           sudo ./setup-webroot.sh
