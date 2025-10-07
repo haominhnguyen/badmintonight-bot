@@ -62,6 +62,14 @@ main() {
         cp nginx-http-test.conf nginx.conf.current
     fi
     
+    # Ensure app container is running before starting nginx
+    log_info "Ensuring app container is running..."
+    if ! sudo docker ps --format "{{.Names}}" | grep -q "badminton-bot-prod"; then
+        log_info "Starting app container..."
+        sudo docker-compose -f docker-compose.prod.yml up -d app
+        sleep 10
+    fi
+    
     # Test nginx configuration
     log_info "Testing nginx configuration..."
     if sudo docker run --rm -v $(pwd)/nginx.conf.current:/etc/nginx/nginx.conf nginx:alpine nginx -t; then

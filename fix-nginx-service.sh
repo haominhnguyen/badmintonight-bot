@@ -1,0 +1,116 @@
+#!/bin/bash
+
+# Fix nginx service script
+# This script fixes nginx service issues
+
+set -e
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Logging functions
+log_info() {
+    echo -e "${BLUE}[INFO]${NC} $1"
+}
+
+log_success() {
+    echo -e "${GREEN}[SUCCESS]${NC} $1"
+}
+
+log_warning() {
+    echo -e "${YELLOW}[WARNING]${NC} $1"
+}
+
+log_error() {
+    echo -e "${RED}[ERROR]${NC} $1"
+}
+
+# Main function
+main() {
+    log_info "Starting nginx service fix..."
+    
+    # Stop nginx container if running
+    log_info "Stopping nginx container..."
+    if sudo docker ps --format "{{.Names}}" | grep -q "badminton-nginx"; then
+        sudo docker stop badminton-nginx
+        sudo docker rm badminton-nginx
+        log_success "Nginx container stopped and removed"
+    else
+        log_info "Nginx container not running"
+    fi
+    
+    # Wait for app container to be ready
+    log_info "Waiting for app container to be ready..."
+    for i in {1..30}; do
+        if sudo docker ps --format "{{.Names}}" | grep -q "badminton-bot-prod"; then
+            log_success "App container is running"
+            break
+        fi
+        
+        if [[ $i -eq 30 ]]; then
+            log_warning "App container is not ready after 30 attempts"
+        fi
+        
+        sleep 2
+    done
+    
+    # Start nginx container
+    log_info "Starting nginx container..."
+    sudo docker-compose -f docker-compose.prod.yml up -d nginx
+    
+    # Wait for nginx to start
+    sleep 10
+    
+    # Check if nginx is running
+    log_info "Checking nginx status..."
+    if sudo docker ps --format "{{.Names}}" | grep -q "badminton-nginx"; then
+        log_success "Nginx is running"
+    else
+        log_error "Nginx failed to start"
+        
+        # Show nginx logs
+        echo "=== Nginx Logs ==="
+        sudo docker logs badminton-nginx 2>&1 || echo "No logs found"
+        return 1
+    fi
+    
+    # Test nginx configuration
+    log_info "Testing nginx configuration..."
+    if sudo docker exec badminton-nginx nginx -t; then
+        log_success "Nginx configuration is valid"
+    else
+        log_error "Nginx configuration is invalid"
+        
+        # Show nginx configuration
+        echo "=== Nginx Configuration ==="
+        sudo docker exec badminton-nginx cat /etc/nginx/nginx.conf
+        return 1
+    fi
+    
+    # Test HTTP connectivity
+    log_info "Testing HTTP connectivity..."
+    if curl -f -s -o /dev/null http://localhost/health; then
+        log_success "HTTP connectivity test passed"
+    else
+        log_warning "HTTP connectivity test failed"
+        
+        # Try different endpoints
+        log_info "Trying different endpoints..."
+        curl -v http://localhost/ 2>&1 || echo "Connection failed"
+        curl -v http://localhost/health 2>&1 || echo "Health check failed"
+    fi
+    
+    # Check nginx logs
+    log_info "Checking nginx logs..."
+    echo "=== Nginx Logs (last 10 lines) ==="
+    sudo docker logs badminton-nginx --tail 10
+    
+    log_success "Nginx service fix completed!"
+}
+
+# Run main function
+main "$@"

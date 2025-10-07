@@ -227,9 +227,9 @@ jobs:
           sudo chmod +x reset-database.sh
           sudo ./reset-database.sh
           
-          # Fix nginx configuration if needed
-          sudo chmod +x fix-nginx.sh
-          sudo ./fix-nginx.sh
+          # Fix nginx service
+          sudo chmod +x fix-nginx-service.sh
+          sudo ./fix-nginx-service.sh
           
           # Debug application
           sudo chmod +x debug-application.sh
