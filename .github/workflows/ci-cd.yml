@@ -228,43 +228,31 @@ jobs:
           sudo chmod +x fix-application-startup.sh
           sudo ./fix-application-startup.sh
           
-          # Create and run database update script
-          cat > update-env-database.sh << 'EOF'
-#!/bin/bash
-set -e
-PROJECT_DIR="/opt/badminton-bot"
-cd $PROJECT_DIR
-if [[ -f ".env" ]]; then
-    cp .env .env.backup
-    sed -i 's|DATABASE_URL=postgresql://badminton_user:badminton_secure_password_123@badminton-postgres-prod:5432/badminton_bot|DATABASE_URL=postgresql://badminton_user:badminton_secure_password_123@postgres:5432/badminton_bot|g' .env
-    echo "DATABASE_URL updated in .env file"
-    grep "DATABASE_URL" .env
-fi
-EOF
-          chmod +x update-env-database.sh
-          sudo ./update-env-database.sh
+          # Update database connection in .env file
+          if [[ -f ".env" ]]; then
+            cp .env .env.backup
+            sed -i 's|DATABASE_URL=postgresql://badminton_user:badminton_secure_password_123@badminton-postgres-prod:5432/badminton_bot|DATABASE_URL=postgresql://badminton_user:badminton_secure_password_123@postgres:5432/badminton_bot|g' .env
+            echo "DATABASE_URL updated in .env file"
+            grep "DATABASE_URL" .env
+          fi
           
-          # Create and run database test script
-          cat > test-database-connection.sh << 'EOF'
-#!/bin/bash
-set -e
-echo "Testing database connection..."
-if sudo docker ps --format "{{.Names}}" | grep -q "badminton-postgres-prod"; then
-    echo "PostgreSQL container is running"
-    if sudo docker exec badminton-postgres-prod pg_isready -U badminton_user -d badminton_bot; then
-        echo "Database is ready and accepting connections"
-    else
-        echo "Database is not ready"
-    fi
-else
-    echo "PostgreSQL container is not running"
-fi
-EOF
-          chmod +x test-database-connection.sh
-          sudo ./test-database-connection.sh
+          # Test database connection
+          echo "Testing database connection..."
+          if sudo docker ps --format "{{.Names}}" | grep -q "badminton-postgres-prod"; then
+            echo "PostgreSQL container is running"
+            if sudo docker exec badminton-postgres-prod pg_isready -U badminton_user -d badminton_bot; then
+              echo "Database is ready and accepting connections"
+            else
+              echo "Database is not ready"
+            fi
+          else
+            echo "PostgreSQL container is not running"
+          fi
           
           # Check containers
+          sudo chmod +x check-containers.sh
           sudo ./check-containers.sh
+          sudo chmod +x manage.sh
           sudo ./manage.sh status
 
     - name: Create backup after deployment
