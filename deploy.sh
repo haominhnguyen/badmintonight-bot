@@ -52,10 +52,7 @@ main() {
     log_info "Running database migrations..."
     sudo docker exec badminton-bot-prod npx prisma migrate deploy || echo "Migration failed, but continuing..."
     
-    # Force remove nginx completely
-    log_info "Force removing nginx completely..."
-    sudo chmod +x force-remove-nginx.sh
-    sudo ./force-remove-nginx.sh
+    # Nginx removal removed
     
     # Check containers
     log_info "Checking containers..."
