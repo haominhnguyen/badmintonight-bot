@@ -228,6 +228,10 @@ jobs:
           sudo chmod +x fix-application-startup.sh
           sudo ./fix-application-startup.sh
           
+          # Update database connection
+          sudo chmod +x update-env-database.sh
+          sudo ./update-env-database.sh
+          
           # Check containers
           sudo ./check-containers.sh
           sudo ./manage.sh status
