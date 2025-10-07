@@ -191,8 +191,11 @@ jobs:
         script: |
           cd /opt/badminton-bot
           git pull origin main
-          sudo docker-compose -f docker-compose.prod.yml down
-          sudo docker-compose -f docker-compose.prod.yml pull
+          
+          # Run production setup
+          sudo ./setup-production.sh
+          
+          # Start services
           sudo docker-compose -f docker-compose.prod.yml up -d
           sleep 30
           sudo ./check-containers.sh
