@@ -232,6 +232,10 @@ jobs:
           sudo chmod +x update-env-database.sh
           sudo ./update-env-database.sh
           
+          # Test database connection
+          sudo chmod +x test-database-connection.sh
+          sudo ./test-database-connection.sh
+          
           # Check containers
           sudo ./check-containers.sh
           sudo ./manage.sh status
