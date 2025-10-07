@@ -123,8 +123,7 @@ restart() {
         sudo docker-compose -f docker-compose.prod.yml up -d
     fi
     
-    # Restart Nginx
-    systemctl restart nginx
+    # Nginx restart removed
     
     # Wait for services to be ready
     sleep 10
@@ -159,8 +158,7 @@ stop() {
         sudo docker-compose -f docker-compose.prod.yml down
     fi
     
-    # Stop Nginx
-    systemctl stop nginx
+    # Nginx stop removed
     
     log_success "Services stopped!"
 }
@@ -177,8 +175,7 @@ start() {
         sudo docker-compose -f docker-compose.prod.yml up -d
     fi
     
-    # Start Nginx
-    systemctl start nginx
+    # Nginx start removed
     
     # Wait for services to be ready
     sleep 10
@@ -285,8 +282,7 @@ show_info() {
     fi
     echo ""
     
-    echo "=== NGINX STATUS ==="
-    systemctl status nginx --no-pager -l
+    # Nginx status removed
     echo ""
     
     echo "=== DISK USAGE ==="
@@ -328,7 +324,7 @@ show_usage() {
     echo "Available services for logs:"
     echo "  app                 - Application logs"
     echo "  db                  - Database logs"
-    echo "  nginx               - Nginx logs"
+    # Nginx logs removed"
     echo "  system              - System logs"
     echo "  monitor             - Monitor logs"
     echo ""

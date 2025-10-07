@@ -200,9 +200,7 @@ jobs:
           # Pull code
           git pull origin main
           
-          # Backup nginx config
-          sudo cp nginx.conf nginx.conf.backup
-          sudo chown $USER:$USER nginx.conf.backup
+          # Nginx config removed
           
           # Make all scripts executable
           sudo chmod +x *.sh
@@ -277,10 +275,9 @@ jobs:
           ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           
           📋 Common fixes:
-          - Check nginx configuration: sudo nginx -t
           - Check container status: sudo docker ps
           - Check logs: sudo docker logs badminton-bot-prod
-          - Restart services: sudo systemctl restart nginx
+          - Restart containers: sudo docker-compose -f docker-compose.prod.yml restart
 
   rollback:
     name: Rollback
