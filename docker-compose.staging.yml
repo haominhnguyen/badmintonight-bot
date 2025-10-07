@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: badminton-postgres-staging
+    environment:
+      POSTGRES_DB: badminton_bot_staging
+      POSTGRES_USER: badminton_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data_staging:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "127.0.0.1:5433:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U badminton_user -d badminton_bot_staging"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  app:
+    build: .
+    container_name: badminton-bot-staging
+    environment:
+      DATABASE_URL: "postgresql://badminton_user:${POSTGRES_PASSWORD}@postgres:5432/badminton_bot_staging?schema=public"
+      NODE_ENV: staging
+      PORT: 3101
+      COURT_PRICE: ${COURT_PRICE:-120000}
+      SHUTTLE_PRICE: ${SHUTTLE_PRICE:-25000}
+      FEMALE_PRICE: ${FEMALE_PRICE:-40000}
+    env_file:
+      - .env
+    ports:
+      - "127.0.0.1:3101:3101"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3101/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data_staging:
