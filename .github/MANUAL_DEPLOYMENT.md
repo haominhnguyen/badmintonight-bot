@@ -14,8 +14,7 @@ Hướng dẫn sử dụng manual deployment từ GitHub Actions workflow với 
 ### 2. Cấu hình Deployment Options
 
 #### Environment Selection
-- **Staging**: Deploy lên môi trường staging
-- **Production**: Deploy lên môi trường production
+- **Production**: Deploy lên môi trường production (chỉ có production)
 
 #### Skip Tests Option
 - **Skip tests**: Bỏ qua bước test (chỉ build và deploy)
@@ -29,22 +28,13 @@ Hướng dẫn sử dụng manual deployment từ GitHub Actions workflow với 
 
 ### Automatic Deployment (Push Events)
 ```bash
-# Push to develop branch
-git push origin develop
-# → Tự động deploy to staging
-
 # Push to main branch  
 git push origin main
-# → Tự động deploy to production
+# → Tự động build Docker và deploy to production
 ```
 
 ### Manual Deployment (Workflow Dispatch)
 ```bash
-# Manual deploy to staging
-# → Chọn environment: staging
-# → Skip tests: false (recommended)
-# → Force deploy: false
-
 # Manual deploy to production
 # → Chọn environment: production
 # → Skip tests: false (recommended)
@@ -68,18 +58,11 @@ git checkout -b feature/new-feature
 npm test
 npm run lint
 
-# 3. Push to develop
-git push origin develop
-# → Automatic deploy to staging
-
-# 4. Test on staging
-# → Check https://staging.haominhnguyen.shop
-
-# 5. Merge to main
+# 3. Merge to main
 git checkout main
-git merge develop
+git merge feature/new-feature
 git push origin main
-# → Automatic deploy to production
+# → Automatic build Docker và deploy to production
 ```
 
 ### 2. Hotfix Deployment
@@ -126,28 +109,17 @@ cd /opt/badminton-bot
 - **Purpose**: Build Docker image without tests
 - **Dependencies**: None
 
-### 4. Deploy Staging Job
-- **Trigger**: Push to develop, Manual (environment = staging)
-- **Purpose**: Deploy to staging environment
-- **Dependencies**: Build jobs
-
-### 5. Deploy Production Job
+### 4. Deploy Production Job
 - **Trigger**: Push to main, Manual (environment = production)
 - **Purpose**: Deploy to production environment
 - **Dependencies**: Build jobs
 
-### 6. Rollback Job
+### 5. Rollback Job
 - **Trigger**: Production deployment failure
 - **Purpose**: Automatic rollback
 - **Dependencies**: None
 
 ## Environment Configuration
-
-### Staging Environment
-- **URL**: https://staging.haominhnguyen.shop
-- **Database**: badminton_bot_staging
-- **Port**: 3101
-- **Auto-deploy**: Push to develop branch
 
 ### Production Environment
 - **URL**: https://haominhnguyen.shop
