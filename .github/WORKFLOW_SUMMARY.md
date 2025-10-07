@@ -256,6 +256,21 @@ cd /opt/badminton-bot
 # - Missing quotes
 # - Invalid expressions
 # - Job name with hyphens
+# - Secrets in if conditions
+```
+
+### 6. GitHub Actions Expression Issues
+```bash
+# Lỗi thường gặp:
+# ❌ if: secrets.SLACK_WEBHOOK_URL
+# ❌ if: success() && secrets.SLACK_WEBHOOK_URL
+# ✅ if: ${{ secrets.SLACK_WEBHOOK_URL }}
+# ✅ if: success() && ${{ secrets.SLACK_WEBHOOK_URL }}
+
+# Secrets trong if conditions:
+# - Phải sử dụng ${{ }} syntax
+# - Không thể sử dụng trực tiếp secrets
+# - Cần wrap trong expression
 ```
 
 ### 6. Workflow Validation
