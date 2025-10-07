@@ -41,16 +41,6 @@ services:
       timeout: 10s
       retries: 3
 
-  nginx:
-    image: nginx:alpine
-    container_name: badminton-nginx
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-    depends_on:
-      - app
-    restart: unless-stopped
 
 volumes:
   postgres_data_prod:
