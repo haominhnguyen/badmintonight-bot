@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Restart nginx with new configuration
-# This script restarts nginx with the new configuration
+# Nginx Manager Script
+# This script manages nginx container and system service
 
 set -e
 
@@ -31,15 +31,17 @@ log_error() {
 
 # Main function
 main() {
-    log_info "Restarting nginx with new configuration..."
+    log_info "Managing nginx service..."
     
-    # Stop nginx container
+    # Stop system nginx service
+    log_info "Stopping system nginx service..."
+    sudo systemctl stop nginx || true
+    sudo systemctl disable nginx || true
+    
+    # Stop nginx container if running
     log_info "Stopping nginx container..."
     sudo docker stop badminton-nginx || true
     sudo docker rm badminton-nginx || true
-    
-    # Wait a moment
-    sleep 2
     
     # Start nginx container
     log_info "Starting nginx container..."
@@ -48,16 +50,12 @@ main() {
     # Wait for nginx to start
     sleep 10
     
-    # Check if nginx is running
-    log_info "Checking nginx status..."
+    # Check if nginx container is running
+    log_info "Checking nginx container status..."
     if sudo docker ps --format "{{.Names}}" | grep -q "badminton-nginx"; then
         log_success "Nginx container is running"
     else
         log_error "Nginx container failed to start"
-        
-        # Show nginx logs
-        echo "=== Nginx Logs ==="
-        sudo docker logs badminton-nginx --tail 20
         return 1
     fi
     
@@ -67,10 +65,6 @@ main() {
         log_success "Nginx configuration is valid"
     else
         log_error "Nginx configuration is invalid"
-        
-        # Show nginx logs
-        echo "=== Nginx Logs ==="
-        sudo docker logs badminton-nginx --tail 20
         return 1
     fi
     
@@ -80,18 +74,13 @@ main() {
         log_success "HTTP connectivity test passed"
     else
         log_warning "HTTP connectivity test failed"
-        
-        # Try different endpoints
-        log_info "Trying different endpoints..."
-        curl -v http://localhost/ 2>&1 || echo "Connection failed"
-        curl -v http://localhost/health 2>&1 || echo "Health check failed"
     fi
     
-    # Show nginx logs
-    log_info "Nginx logs (last 10 lines):"
-    sudo docker logs badminton-nginx --tail 10
+    # Show nginx status
+    log_info "Nginx status:"
+    sudo docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}" | grep nginx
     
-    log_success "Nginx restart completed!"
+    log_success "Nginx management completed!"
 }
 
 # Run main function
