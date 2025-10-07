@@ -191,12 +191,11 @@ jobs:
         script: |
           cd /opt/badminton-bot
           
-          # Fix git ownership issue
-          sudo git config --global --add safe.directory /opt/badminton-bot
-          git pull origin main
-          
           # Run permission fix script
-          sudo ./fix-permissions.sh
+          sudo ./fix-all-permissions.sh
+          
+          # Pull code
+          git pull origin main
           
           # Backup nginx config
           cp nginx.conf nginx.conf.backup
