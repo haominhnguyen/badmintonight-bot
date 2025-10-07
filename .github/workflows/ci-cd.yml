@@ -227,6 +227,10 @@ jobs:
           sudo docker-compose -f docker-compose.prod.yml up -d
           sleep 30
           
+          # Fix nginx configuration if needed
+          sudo chmod +x fix-nginx.sh
+          sudo ./fix-nginx.sh
+          
           # Debug application
           sudo chmod +x debug-application.sh
           sudo ./debug-application.sh
@@ -255,6 +259,10 @@ jobs:
           else
             echo "PostgreSQL container is not running"
           fi
+          
+          # Test nginx configuration
+          sudo chmod +x test-nginx.sh
+          sudo ./test-nginx.sh
           
           # Check containers
           sudo chmod +x check-containers.sh
