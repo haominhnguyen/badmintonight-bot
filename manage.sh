@@ -35,9 +35,10 @@ log_error() {
 }
 
 check_root() {
+    # Allow running as non-root for CI/CD environments
     if [[ $EUID -ne 0 ]]; then
-        log_error "This script must be run as root"
-        exit 1
+        log_warning "Running as non-root user. Some operations may require sudo."
+        # Don't exit, just warn
     fi
 }
 
@@ -118,8 +119,13 @@ restart() {
     cd $PROJECT_DIR
     
     # Restart Docker containers
-    docker-compose -f docker-compose.prod.yml down
-    docker-compose -f docker-compose.prod.yml up -d
+    if [[ $EUID -eq 0 ]]; then
+        docker-compose -f docker-compose.prod.yml down
+        docker-compose -f docker-compose.prod.yml up -d
+    else
+        sudo docker-compose -f docker-compose.prod.yml down
+        sudo docker-compose -f docker-compose.prod.yml up -d
+    fi
     
     # Restart Nginx
     systemctl restart nginx
@@ -128,11 +134,20 @@ restart() {
     sleep 10
     
     # Check status
-    if docker ps | grep -q "badminton-bot-prod" && docker ps | grep -q "badminton-postgres-prod"; then
-        log_success "Services restarted successfully!"
+    if [[ $EUID -eq 0 ]]; then
+        if docker ps | grep -q "badminton-bot-prod" && docker ps | grep -q "badminton-postgres-prod"; then
+            log_success "Services restarted successfully!"
+        else
+            log_error "Failed to restart services!"
+            exit 1
+        fi
     else
-        log_error "Failed to restart services!"
-        exit 1
+        if sudo docker ps | grep -q "badminton-bot-prod" && sudo docker ps | grep -q "badminton-postgres-prod"; then
+            log_success "Services restarted successfully!"
+        else
+            log_error "Failed to restart services!"
+            exit 1
+        fi
     fi
 }
 
@@ -142,7 +157,11 @@ stop() {
     cd $PROJECT_DIR
     
     # Stop Docker containers
-    docker-compose -f docker-compose.prod.yml down
+    if [[ $EUID -eq 0 ]]; then
+        docker-compose -f docker-compose.prod.yml down
+    else
+        sudo docker-compose -f docker-compose.prod.yml down
+    fi
     
     # Stop Nginx
     systemctl stop nginx
@@ -156,7 +175,11 @@ start() {
     cd $PROJECT_DIR
     
     # Start Docker containers
-    docker-compose -f docker-compose.prod.yml up -d
+    if [[ $EUID -eq 0 ]]; then
+        docker-compose -f docker-compose.prod.yml up -d
+    else
+        sudo docker-compose -f docker-compose.prod.yml up -d
+    fi
     
     # Start Nginx
     systemctl start nginx
@@ -165,11 +188,20 @@ start() {
     sleep 10
     
     # Check status
-    if docker ps | grep -q "badminton-bot-prod" && docker ps | grep -q "badminton-postgres-prod"; then
-        log_success "Services started successfully!"
+    if [[ $EUID -eq 0 ]]; then
+        if docker ps | grep -q "badminton-bot-prod" && docker ps | grep -q "badminton-postgres-prod"; then
+            log_success "Services started successfully!"
+        else
+            log_error "Failed to start services!"
+            exit 1
+        fi
     else
-        log_error "Failed to start services!"
-        exit 1
+        if sudo docker ps | grep -q "badminton-bot-prod" && sudo docker ps | grep -q "badminton-postgres-prod"; then
+            log_success "Services started successfully!"
+        else
+            log_error "Failed to start services!"
+            exit 1
+        fi
     fi
 }
 
@@ -186,19 +218,34 @@ update() {
     fi
     
     # Rebuild and restart containers
-    docker-compose -f docker-compose.prod.yml down
-    docker-compose -f docker-compose.prod.yml build
-    docker-compose -f docker-compose.prod.yml up -d
+    if [[ $EUID -eq 0 ]]; then
+        docker-compose -f docker-compose.prod.yml down
+        docker-compose -f docker-compose.prod.yml build
+        docker-compose -f docker-compose.prod.yml up -d
+    else
+        sudo docker-compose -f docker-compose.prod.yml down
+        sudo docker-compose -f docker-compose.prod.yml build
+        sudo docker-compose -f docker-compose.prod.yml up -d
+    fi
     
     # Wait for services to be ready
     sleep 30
     
     # Check status
-    if docker ps | grep -q "badminton-bot-prod" && docker ps | grep -q "badminton-postgres-prod"; then
-        log_success "Application updated successfully!"
+    if [[ $EUID -eq 0 ]]; then
+        if docker ps | grep -q "badminton-bot-prod" && docker ps | grep -q "badminton-postgres-prod"; then
+            log_success "Application updated successfully!"
+        else
+            log_error "Failed to update application!"
+            exit 1
+        fi
     else
-        log_error "Failed to update application!"
-        exit 1
+        if sudo docker ps | grep -q "badminton-bot-prod" && sudo docker ps | grep -q "badminton-postgres-prod"; then
+            log_success "Application updated successfully!"
+        else
+            log_error "Failed to update application!"
+            exit 1
+        fi
     fi
 }
 
@@ -206,8 +253,13 @@ cleanup() {
     log_info "Cleaning up system..."
     
     # Clean Docker
-    docker system prune -f
-    docker volume prune -f
+    if [[ $EUID -eq 0 ]]; then
+        docker system prune -f
+        docker volume prune -f
+    else
+        sudo docker system prune -f
+        sudo docker volume prune -f
+    fi
     
     # Clean logs
     find /var/log -name "*.log" -mtime +7 -delete 2>/dev/null || true
@@ -230,7 +282,11 @@ show_info() {
     echo ""
     
     echo "=== DOCKER STATUS ==="
-    docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+    if [[ $EUID -eq 0 ]]; then
+        docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+    else
+        sudo docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+    fi
     echo ""
     
     echo "=== NGINX STATUS ==="

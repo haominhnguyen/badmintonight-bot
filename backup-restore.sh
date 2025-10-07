@@ -36,15 +36,20 @@ log_error() {
 }
 
 check_root() {
+    # Allow running as non-root for CI/CD environments
     if [[ $EUID -ne 0 ]]; then
-        log_error "This script must be run as root"
-        exit 1
+        log_warning "Running as non-root user. Some operations may require sudo."
+        # Don't exit, just warn
     fi
 }
 
 create_backup_directory() {
     log_info "Creating backup directory..."
-    mkdir -p $BACKUP_DIR
+    if [[ $EUID -eq 0 ]]; then
+        mkdir -p $BACKUP_DIR
+    else
+        sudo mkdir -p $BACKUP_DIR
+    fi
     log_success "Backup directory created: $BACKUP_DIR"
 }
 
@@ -54,11 +59,19 @@ backup_database() {
     local db_backup_file="$BACKUP_DIR/database_$DATE.sql"
     
     # Create database backup
-    docker exec badminton-postgres-prod pg_dump \
-        -U badminton_user \
-        -h localhost \
-        -p 5432 \
-        badminton_bot > $db_backup_file
+    if [[ $EUID -eq 0 ]]; then
+        docker exec badminton-postgres-prod pg_dump \
+            -U badminton_user \
+            -h localhost \
+            -p 5432 \
+            badminton_bot > $db_backup_file
+    else
+        sudo docker exec badminton-postgres-prod pg_dump \
+            -U badminton_user \
+            -h localhost \
+            -p 5432 \
+            badminton_bot > $db_backup_file
+    fi
     
     if [ -f "$db_backup_file" ] && [ -s "$db_backup_file" ]; then
         log_success "Database backup created: $db_backup_file"
@@ -153,12 +166,12 @@ Files included in this backup:
 
 System Information:
 - OS: $(uname -a)
-- Docker Version: $(docker --version)
-- Docker Compose Version: $(docker-compose --version)
+- Docker Version: $(sudo docker --version 2>/dev/null || docker --version)
+- Docker Compose Version: $(sudo docker-compose --version 2>/dev/null || docker-compose --version)
 - Nginx Version: $(nginx -v 2>&1)
 
 Container Status:
-$(docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}")
+$(sudo docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}" 2>/dev/null || docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}")
 
 Disk Usage:
 $(df -h $BACKUP_DIR)
@@ -224,17 +237,33 @@ restore_database() {
     log_info "Restoring database from $backup_file..."
     
     # Stop application
-    docker-compose -f $PROJECT_DIR/docker-compose.prod.yml stop app
+    if [[ $EUID -eq 0 ]]; then
+        docker-compose -f $PROJECT_DIR/docker-compose.prod.yml stop app
+    else
+        sudo docker-compose -f $PROJECT_DIR/docker-compose.prod.yml stop app
+    fi
     
     # Restore database
     if [[ $backup_file == *.gz ]]; then
-        gunzip -c $backup_file | docker exec -i badminton-postgres-prod psql -U badminton_user -d badminton_bot
+        if [[ $EUID -eq 0 ]]; then
+            gunzip -c $backup_file | docker exec -i badminton-postgres-prod psql -U badminton_user -d badminton_bot
+        else
+            gunzip -c $backup_file | sudo docker exec -i badminton-postgres-prod psql -U badminton_user -d badminton_bot
+        fi
     else
-        docker exec -i badminton-postgres-prod psql -U badminton_user -d badminton_bot < $backup_file
+        if [[ $EUID -eq 0 ]]; then
+            docker exec -i badminton-postgres-prod psql -U badminton_user -d badminton_bot < $backup_file
+        else
+            sudo docker exec -i badminton-postgres-prod psql -U badminton_user -d badminton_bot < $backup_file
+        fi
     fi
     
     # Start application
-    docker-compose -f $PROJECT_DIR/docker-compose.prod.yml start app
+    if [[ $EUID -eq 0 ]]; then
+        docker-compose -f $PROJECT_DIR/docker-compose.prod.yml start app
+    else
+        sudo docker-compose -f $PROJECT_DIR/docker-compose.prod.yml start app
+    fi
     
     log_success "Database restored successfully"
 }
