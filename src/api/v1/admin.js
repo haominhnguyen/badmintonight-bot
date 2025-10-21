@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { body, param, validationResult } = require('express-validator');
+const expressValidator = require('express-validator');
+const { body, param, validationResult } = expressValidator;
 const { 
   authenticateToken, 
   authorizeAdmin,

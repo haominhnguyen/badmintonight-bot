@@ -4,7 +4,8 @@ const rateLimit = require('express-rate-limit');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const { body, validationResult, param } = require('express-validator');
+const expressValidator = require('express-validator');
+const { body, validationResult, param } = expressValidator;
 const db = require('./db');
 const { computeSession, generateSummaryReport } = require('./compute');
 const { 
@@ -104,31 +105,7 @@ const validateRequest = (req, res, next) => {
   next();
 };
 
-// Authentication Middleware
-const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-
-  if (!token) {
-    return res.status(401).json({
-      success: false,
-      error: 'Access token required',
-      code: 'MISSING_TOKEN'
-    });
-  }
-
-  jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) {
-      return res.status(403).json({
-        success: false,
-        error: 'Invalid or expired token',
-        code: 'INVALID_TOKEN'
-      });
-    }
-    req.user = user;
-    next();
-  });
-};
+// Authentication Middleware (imported from middleware/auth)
 
 // Admin Authorization Middleware
 const requireAdmin = (req, res, next) => {
@@ -142,28 +119,7 @@ const requireAdmin = (req, res, next) => {
   next();
 };
 
-// Input Sanitization
-const sanitizeInput = (req, res, next) => {
-  // Remove any potential XSS attempts
-  const sanitize = (obj) => {
-    if (typeof obj === 'string') {
-      return obj.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-                .replace(/javascript:/gi, '')
-                .replace(/on\w+\s*=/gi, '');
-    }
-    if (typeof obj === 'object' && obj !== null) {
-      for (let key in obj) {
-        obj[key] = sanitize(obj[key]);
-      }
-    }
-    return obj;
-  };
-  
-  req.body = sanitize(req.body);
-  req.query = sanitize(req.query);
-  req.params = sanitize(req.params);
-  next();
-};
+// Input Sanitization (imported from middleware/sanitize)
 
 router.use(sanitizeInput);
 
