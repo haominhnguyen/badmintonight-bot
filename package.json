@@ -31,6 +31,12 @@
     "deploy:fix": "./scripts/fix-deployment.sh",
     "cicd:check": "./scripts/check-cicd.sh",
     "deployment:status": "node scripts/deployment-status.js",
+    "version:cleanup": "node scripts/cleanup-version.js",
+    "version:force-cleanup": "node scripts/force-cleanup-version.js",
+    "cicd:workflow": "node scripts/check-cicd-workflow.js",
+    "swagger:check": "node scripts/check-swagger-docs.js",
+    "swagger:summary": "node scripts/swagger-summary.js",
+    "swagger:test": "node scripts/test-swagger-server.js",
     "rollback": "./rollback.sh rollback",
     "health-check": "./health-check.sh health-check",
     "monitor": "./monitor.sh status"
@@ -44,6 +50,7 @@
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "express-rate-limit": "^7.1.5",
+    "express-validator": "^7.2.1",
     "helmet": "^7.1.0",
     "isomorphic-dompurify": "^2.6.0",
     "jsonwebtoken": "^9.0.2",
@@ -52,7 +59,8 @@
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
     "webidl-conversions": "^7.0.0",
-    "whatwg-url": "^11.0.0"
+    "whatwg-url": "^11.0.0",
+    "yarn": "^1.22.22"
   },
   "devDependencies": {
     "nodemon": "^3.0.2",

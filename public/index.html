@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="google-adsense-account" content="ca-pub-9445493979241456">
   <meta name="version" content="1.0.1">
-  <meta name="build-time" content="">
-  <meta name="git-commit" content="">
+  <meta name="build-time" content="2025-10-21T17:27:54.980Z">
+  <meta name="git-commit" content="3ae25d565c15390c43f6a59fd846e5650cd1439d">
   <title>🏸 Badminton Bot - Dashboard</title>
   <style>
     * {
@@ -1726,6 +1726,12 @@
       }
     }
   </style>
+  <!-- Version Info -->
+  <script>
+    window.APP_VERSION = '1.0.1';
+    window.BUILD_TIME = '2025-10-21T17:27:54.980Z';
+    window.GIT_COMMIT = '3ae25d565c15390c43f6a59fd846e5650cd1439d';
+  </script>
 </head>
 <body>
   <div class="container">
@@ -2052,7 +2058,6 @@
 
     // Load initial data
     loadAllData();
-    
 
     async function loadAllData() {
       await Promise.all([
@@ -2373,8 +2378,7 @@
       
       document.body.appendChild(modal);
       modal.style.display = 'block';
-      
-      
+
       // Load detailed statistics
       loadDetailedMasterStatistics();
     }
@@ -2598,7 +2602,6 @@
         button.textContent = 'Ẩn chi tiết';
       }
     }
-
 
     // Modal functions removed - using separate page instead
 

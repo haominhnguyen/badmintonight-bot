@@ -455,6 +455,97 @@ const options = {
               }
             }
           }
+        },
+        LoginRequest: {
+          type: 'object',
+          required: ['password'],
+          properties: {
+            password: {
+              type: 'string',
+              description: 'Admin password'
+            }
+          }
+        },
+        LoginResponse: {
+          type: 'object',
+          properties: {
+            success: { type: 'boolean' },
+            data: {
+              type: 'object',
+              properties: {
+                token: { type: 'string' },
+                expiresIn: { type: 'string' },
+                user: {
+                  type: 'object',
+                  properties: {
+                    id: { type: 'string' },
+                    role: { type: 'string' }
+                  }
+                }
+              }
+            },
+            message: { type: 'string' },
+            timestamp: { type: 'string' }
+          }
+        },
+        CreateSessionRequest: {
+          type: 'object',
+          required: ['date'],
+          properties: {
+            date: {
+              type: 'string',
+              description: 'Session date (YYYY-MM-DD, "today", or "tomorrow")'
+            },
+            name: {
+              type: 'string',
+              description: 'Session name (optional)'
+            },
+            courtCount: {
+              type: 'integer',
+              minimum: 1,
+              maximum: 10,
+              description: 'Number of courts (optional, default: 3)'
+            }
+          }
+        },
+        SetCourtRequest: {
+          type: 'object',
+          required: ['count'],
+          properties: {
+            count: {
+              type: 'integer',
+              minimum: 1,
+              maximum: 10,
+              description: 'Number of courts'
+            }
+          }
+        },
+        SetShuttleRequest: {
+          type: 'object',
+          required: ['count'],
+          properties: {
+            count: {
+              type: 'integer',
+              minimum: 1,
+              maximum: 50,
+              description: 'Number of shuttlecocks'
+            }
+          }
+        },
+        StatisticsOverview: {
+          type: 'object',
+          properties: {
+            totalSessions: { type: 'integer' },
+            totalParticipants: { type: 'integer' },
+            totalRevenue: { type: 'number' },
+            averageSessionSize: { type: 'number' },
+            sessionsThisMonth: { type: 'integer' },
+            participantsThisMonth: { type: 'integer' },
+            revenueThisMonth: { type: 'number' },
+            paymentCompletionRate: { type: 'number' },
+            totalPaid: { type: 'number' },
+            totalUnpaid: { type: 'number' }
+          }
         }
       }
     },
@@ -487,10 +578,35 @@ const options = {
       {
         name: 'Health',
         description: 'Health check and system status'
+      },
+      {
+        name: 'Cron',
+        description: 'Cron job management and automation'
+      },
+      {
+        name: 'Public',
+        description: 'Public endpoints (no authentication required)'
+      },
+      {
+        name: 'System',
+        description: 'System information and version endpoints'
       }
     ]
   },
-  apis: ['./src/api.js', './src/api-server.js']
+  apis: [
+    './src/api.js', 
+    './src/api-server.js',
+    './src/api/v1/auth.js',
+    './src/api/v1/sessions.js',
+    './src/api/v1/admin.js',
+    './src/api/v1/payments.js',
+    './src/api/v1/statistics.js',
+    './src/api/v1/health.js',
+    './src/api/v1/cron.js',
+    './src/api/v1/public.js',
+    './src/api/v1/version.js',
+    './src/api/v1/index.js'
+  ]
 };
 
 const swaggerSpec = swaggerJsdoc(options);

@@ -47,7 +47,7 @@ function updateHtmlFile(filePath) {
     );
     
     // Add version info to title if not present
-    if (!content.includes('version-info')) {
+    if (!content.includes('window.APP_VERSION')) {
       content = content.replace(
         '</head>',
         `  <!-- Version Info -->
@@ -57,6 +57,20 @@ function updateHtmlFile(filePath) {
     window.GIT_COMMIT = '${gitCommit}';
   </script>
 </head>`
+      );
+    } else {
+      // Update existing version info
+      content = content.replace(
+        /window\.APP_VERSION = '[^']*';/,
+        `window.APP_VERSION = '${version}';`
+      );
+      content = content.replace(
+        /window\.BUILD_TIME = '[^']*';/,
+        `window.BUILD_TIME = '${buildTime}';`
+      );
+      content = content.replace(
+        /window\.GIT_COMMIT = '[^']*';/,
+        `window.GIT_COMMIT = '${gitCommit}';`
       );
     }
     
