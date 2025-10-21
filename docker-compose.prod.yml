@@ -19,7 +19,9 @@ services:
       retries: 3
 
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.arm64
     container_name: badminton-bot-prod
     environment:
       DATABASE_URL: "postgresql://badminton_user:badminton_secure_password_123@postgres:5432/badminton_bot?schema=public"

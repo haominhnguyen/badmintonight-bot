@@ -27,6 +27,10 @@
     "restore": "./backup-restore.sh restore",
     "version:update": "node scripts/update-version.js",
     "version:check": "node scripts/check-version.js",
+    "docker:check": "./scripts/check-docker-build.sh",
+    "deploy:fix": "./scripts/fix-deployment.sh",
+    "cicd:check": "./scripts/check-cicd.sh",
+    "deployment:status": "node scripts/deployment-status.js",
     "rollback": "./rollback.sh rollback",
     "health-check": "./health-check.sh health-check",
     "monitor": "./monitor.sh status"

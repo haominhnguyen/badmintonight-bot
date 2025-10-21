@@ -1,0 +1,9 @@
+{
+  "timestamp": "2025-10-21T17:13:14.159Z",
+  "docker": true,
+  "version": true,
+  "html": true,
+  "scripts": true,
+  "package": true,
+  "cicd": false
+}
