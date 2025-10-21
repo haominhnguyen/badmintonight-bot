@@ -211,16 +211,16 @@ jobs:
           sudo chmod +x deploy.sh
           sudo ./deploy.sh
 
-    - name: Create backup after deployment
-      uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: ${{ secrets.PRODUCTION_HOST }}
-        username: ${{ secrets.PRODUCTION_USERNAME }}
-        password: ${{ secrets.PRODUCTION_PASSWORD }}
-        script: |
-          cd /opt/badminton-bot
-          sudo chmod +x backup-restore.sh
-          sudo ./backup-restore.sh backup
+    # - name: Create backup after deployment
+    #   uses: appleboy/ssh-action@v1.0.3
+    #   with:
+    #     host: ${{ secrets.PRODUCTION_HOST }}
+    #     username: ${{ secrets.PRODUCTION_USERNAME }}
+    #     password: ${{ secrets.PRODUCTION_PASSWORD }}
+    #     script: |
+    #       cd /opt/badminton-bot
+    #       sudo chmod +x backup-restore.sh
+    #       sudo ./backup-restore.sh backup
 
     - name: Health check production
       run: |
@@ -279,45 +279,45 @@ jobs:
           - Check logs: sudo docker logs badminton-bot-prod
           - Restart containers: sudo docker-compose -f docker-compose.prod.yml restart
 
-  rollback:
-    name: Rollback
-    runs-on: ubuntu-latest
-    if: failure() && github.ref == 'refs/heads/main'
-    environment: production
+  # rollback:
+  #   name: Rollback
+  #   runs-on: ubuntu-latest
+  #   if: failure() && github.ref == 'refs/heads/main'
+  #   environment: production
 
-    steps:
-    - name: Rollback to previous version
-      uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: ${{ secrets.PRODUCTION_HOST }}
-        username: ${{ secrets.PRODUCTION_USERNAME }}
-        password: ${{ secrets.PRODUCTION_PASSWORD }}
-        script: |
-          cd /opt/badminton-bot
-          sudo chmod +x manage.sh
-          sudo ./manage.sh rollback
+  #   steps:
+  #   - name: Rollback to previous version
+  #     uses: appleboy/ssh-action@v1.0.3
+  #     with:
+  #       host: ${{ secrets.PRODUCTION_HOST }}
+  #       username: ${{ secrets.PRODUCTION_USERNAME }}
+  #       password: ${{ secrets.PRODUCTION_PASSWORD }}
+  #       script: |
+  #         cd /opt/badminton-bot
+  #         sudo chmod +x manage.sh
+  #         sudo ./manage.sh rollback
 
-    - name: Notify rollback
-      uses: dawidd6/action-send-mail@v3
-      continue-on-error: true
-      with:
-        server_address: smtp.gmail.com
-        server_port: 587
-        username: ${{ secrets.GMAIL_USERNAME }}
-        password: ${{ secrets.GMAIL_APP_PASSWORD }}
-        subject: "⚠️ Badminton Bot Rollback Executed"
-        to: haonmdotdev@gmail.com
-        from: ${{ secrets.GMAIL_USERNAME }}
-        body: |
-          Badminton Bot has been rolled back to the previous version due to deployment failure.
+  #   - name: Notify rollback
+  #     uses: dawidd6/action-send-mail@v3
+  #     continue-on-error: true
+  #     with:
+  #       server_address: smtp.gmail.com
+  #       server_port: 587
+  #       username: ${{ secrets.GMAIL_USERNAME }}
+  #       password: ${{ secrets.GMAIL_APP_PASSWORD }}
+  #       subject: "⚠️ Badminton Bot Rollback Executed"
+  #       to: haonmdotdev@gmail.com
+  #       from: ${{ secrets.GMAIL_USERNAME }}
+  #       body: |
+  #         Badminton Bot has been rolled back to the previous version due to deployment failure.
           
-          Rollback Details:
-          - Branch: ${{ github.ref }}
-          - Commit: ${{ github.sha }}
-          - Author: ${{ github.actor }}
-          - Time: ${{ github.event.head_commit.timestamp }}
+  #         Rollback Details:
+  #         - Branch: ${{ github.ref }}
+  #         - Commit: ${{ github.sha }}
+  #         - Author: ${{ github.actor }}
+  #         - Time: ${{ github.event.head_commit.timestamp }}
           
-          🔍 Check GitHub Actions logs:
-          ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+  #         🔍 Check GitHub Actions logs:
+  #         ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           
-          The application has been restored to the last working version.
+  #         The application has been restored to the last working version.
