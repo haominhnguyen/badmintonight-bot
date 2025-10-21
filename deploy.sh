@@ -62,10 +62,10 @@ main() {
     sudo chmod +x fix-api-docs.sh
     sudo ./fix-api-docs.sh
     
-    # Fix SSL and HTTPS
-    log_info "Fixing SSL and HTTPS protocol..."
-    sudo chmod +x fix-ssl-https.sh
-    sudo ./fix-ssl-https.sh
+    # Fix Cloudflare 521 error
+    log_info "Fixing Cloudflare 521 error..."
+    sudo chmod +x fix-cloudflare-521.sh
+    sudo ./fix-cloudflare-521.sh
     
     # Test API endpoints
     log_info "Testing API endpoints..."

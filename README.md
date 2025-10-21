@@ -136,6 +136,7 @@ FRONTEND_URL=https://yourdomain.com
 - `fix-nginx-simple.sh` - Fix nginx with simple config
 - `test-api-endpoints.sh` - Test API endpoints
 - `fix-ssl-https.sh` - Fix SSL and HTTPS protocol
+- `fix-cloudflare-521.sh` - Fix Cloudflare 521 error
 - `fix-api-docs.sh` - Fix API Docs access
 - `debug-api-docs.sh` - Debug API Docs issues
 - `check-containers.sh` - Check container status
