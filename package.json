@@ -37,6 +37,13 @@
     "swagger:check": "node scripts/check-swagger-docs.js",
     "swagger:summary": "node scripts/swagger-summary.js",
     "swagger:test": "node scripts/test-swagger-server.js",
+    "docker:rebuild": "./scripts/rebuild-docker.sh",
+    "docker:test": "./scripts/test-docker-build.sh",
+    "deps:fix": "node scripts/fix-dependencies.js",
+    "docker:tag": "./scripts/docker-tag-version.sh",
+    "docker:push": "./scripts/docker-push-version.sh",
+    "docker:version": "node scripts/docker-version-manager.js",
+    "docker:summary": "node scripts/docker-versioning-summary.js",
     "rollback": "./rollback.sh rollback",
     "health-check": "./health-check.sh health-check",
     "monitor": "./monitor.sh status"

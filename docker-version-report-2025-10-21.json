@@ -1,0 +1,13 @@
+{
+  "timestamp": "2025-10-21T18:01:22.820Z",
+  "version": "1.0.1",
+  "gitCommit": "66e9528",
+  "gitBranch": "main",
+  "buildTime": "2025-10-21T18:01:22.820Z",
+  "tags": [
+    "badminton-bot:latest",
+    "badminton-bot:1.0.1",
+    "badminton-bot:1.0.1-66e9528",
+    "badminton-bot:v1.0.1"
+  ]
+}
