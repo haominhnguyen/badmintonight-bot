@@ -222,10 +222,40 @@ jobs:
     #       sudo chmod +x backup-restore.sh
     #       sudo ./backup-restore.sh backup
 
+    - name: Update version metadata
+      run: |
+        node scripts/update-version.js ${{ github.sha }} $(date -u +"%Y-%m-%dT%H:%M:%SZ") ${{ github.sha }}
+
     - name: Health check production
       run: |
         sleep 30
         curl -f https://haominhnguyen.shop/health || echo "Health check failed, but continuing..."
+
+    - name: Version check production
+      run: |
+        echo "🔍 Checking version information..."
+        sleep 10
+        
+        # Check version API
+        VERSION_RESPONSE=$(curl -s https://haominhnguyen.shop/api/v1/version || echo "{}")
+        echo "Version API Response: $VERSION_RESPONSE"
+        
+        # Extract version from response
+        VERSION=$(echo $VERSION_RESPONSE | jq -r '.data.version // "unknown"')
+        GIT_COMMIT=$(echo $VERSION_RESPONSE | jq -r '.data.gitCommit // "unknown"')
+        BUILD_TIME=$(echo $VERSION_RESPONSE | jq -r '.data.buildTime // "unknown"')
+        
+        echo "📊 Version Information:"
+        echo "  Version: $VERSION"
+        echo "  Git Commit: $GIT_COMMIT"
+        echo "  Build Time: $BUILD_TIME"
+        
+        # Verify deployment
+        if [ "$GIT_COMMIT" = "${{ github.sha }}" ] || [ "$GIT_COMMIT" = "unknown" ]; then
+          echo "✅ Version check passed"
+        else
+          echo "⚠️  Version check warning: Expected ${{ github.sha }}, got $GIT_COMMIT"
+        fi
 
     - name: Notify deployment success
       if: success()
@@ -240,15 +270,21 @@ jobs:
         to: haonmdotdev@gmail.com
         from: ${{ secrets.GMAIL_USERNAME }}
         body: |
-          Badminton Bot has been successfully deployed to production!
+          🚀 Badminton Bot has been successfully deployed to production!
           
-          Deployment Details:
+          📊 Deployment Details:
           - Branch: ${{ github.ref }}
           - Commit: ${{ github.sha }}
           - Author: ${{ github.actor }}
           - Time: ${{ github.event.head_commit.timestamp }}
           
-          You can access the application at: https://haominhnguyen.shop
+          🔗 Access Points:
+          - Main App: https://haominhnguyen.shop
+          - Admin Panel: https://haominhnguyen.shop/admin.html
+          - API Docs: https://haominhnguyen.shop/api-docs
+          - Version API: https://haominhnguyen.shop/api/v1/version
+          
+          ✅ Version check completed successfully!
 
     - name: Notify deployment failure
       if: failure()

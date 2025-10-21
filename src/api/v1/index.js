@@ -10,6 +10,7 @@ const statisticsRoutes = require('./statistics');
 const healthRoutes = require('./health');
 const cronRoutes = require('./cron');
 const publicRoutes = require('./public');
+const versionRoutes = require('./version');
 
 // API Version middleware
 router.use((req, res, next) => {
@@ -27,6 +28,7 @@ router.use('/statistics', statisticsRoutes);
 router.use('/health', healthRoutes);
 router.use('/cron', cronRoutes);
 router.use('/public', publicRoutes);
+router.use('/version', versionRoutes);
 
 // API Info endpoint
 router.get('/', (req, res) => {
@@ -43,7 +45,8 @@ router.get('/', (req, res) => {
         payments: '/api/v1/payments',
         statistics: '/api/v1/statistics',
         health: '/api/v1/health',
-        cron: '/api/v1/cron'
+        cron: '/api/v1/cron',
+        version: '/api/v1/version'
       },
       documentation: '/api-docs',
       status: 'operational'

@@ -1,6 +1,6 @@
 {
   "name": "badminton-bot",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Messenger Bot for badminton money management",
   "main": "src/index.js",
   "scripts": {
@@ -25,6 +25,8 @@
     "deploy:production": "docker-compose -f docker-compose.prod.yml up -d",
     "backup": "./backup-restore.sh backup",
     "restore": "./backup-restore.sh restore",
+    "version:update": "node scripts/update-version.js",
+    "version:check": "node scripts/check-version.js",
     "rollback": "./rollback.sh rollback",
     "health-check": "./health-check.sh health-check",
     "monitor": "./monitor.sh status"
