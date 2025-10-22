@@ -17,6 +17,8 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+    networks:
+      - badminton-network
 
   app:
     build:
@@ -42,7 +44,27 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+    networks:
+      - badminton-network
 
+  nginx:
+    image: nginx:alpine
+    container_name: badminton-nginx-prod
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./logs/nginx:/var/log/nginx
+    depends_on:
+      - app
+    networks:
+      - badminton-network
 
 volumes:
   postgres_data_prod:
+
+networks:
+  badminton-network:
+    driver: bridge

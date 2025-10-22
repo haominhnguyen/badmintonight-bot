@@ -214,25 +214,44 @@ jobs:
         script: |
           cd /opt/badminton-bot
           
-          # Make fix-all-permissions.sh executable
-          sudo chmod +x fix-all-permissions.sh
-          
-          # Run permission fix script
-          sudo ./fix-all-permissions.sh
-          
-          # Pull code
+          # Pull latest code
           git pull origin main
           
-          # Nginx config removed
+          # Create necessary directories
+          mkdir -p nginx logs/nginx
           
-          # Make all scripts executable
-          sudo chmod +x *.sh
-          sudo find . -name "*.sh" -type f -exec chmod +x {} \;
-          sudo find . -type d -exec chmod +x {} \;
+          # Copy nginx config if needed
+          if [ ! -f "nginx/nginx.conf" ] && [ -f "nginx.conf" ]; then
+            cp nginx.conf nginx/nginx.conf
+          fi
           
-          # Run deployment
-          sudo chmod +x deploy.sh
-          sudo ./deploy.sh
+          # Make scripts executable
+          chmod +x *.sh
+          chmod +x scripts/*.sh
+          
+          # Stop existing containers
+          docker-compose -f docker-compose.prod.yml down || true
+          
+          # Remove old nginx container
+          docker rm -f badminton-nginx || true
+          
+          # Start services with production configuration
+          docker-compose -f docker-compose.prod.yml up -d
+          
+          # Wait for services to start
+          sleep 30
+          
+          # Run database migrations
+          docker exec badminton-bot-prod npx prisma migrate deploy || echo "Migration failed, but continuing..."
+          
+          # Test API endpoints
+          echo "Testing API endpoints..."
+          curl -f http://localhost:3100/health || echo "App health check failed"
+          curl -f http://localhost/api/v1/version || echo "API version check failed"
+          curl -f http://localhost/api-docs || echo "API docs check failed"
+          
+          # Show container status
+          docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 
     # - name: Create backup after deployment
     #   uses: appleboy/ssh-action@v1.0.3
@@ -253,6 +272,7 @@ jobs:
       run: |
         sleep 30
         curl -f https://haominhnguyen.shop/health || echo "Health check failed, but continuing..."
+        curl -f https://haominhnguyen.shop/api/v1/version || echo "Version API check failed, but continuing..."
 
     - name: Version check production
       run: |
