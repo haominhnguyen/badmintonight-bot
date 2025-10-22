@@ -49,7 +49,7 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     if: ${{ !inputs.skip_tests || github.event_name == 'push' || github.event_name == 'pull_request' }}
-    
+
     services:
       postgres:
         image: postgres:15-alpine
@@ -95,17 +95,17 @@ jobs:
       - name: Run linting
         run: npm run lint
 
-       - name: Run security audit
-         run: |
-           echo "Running security audit..."
-           npm audit --audit-level high || {
-             echo "High severity vulnerabilities found:"
-             npm audit --audit-level high
-             exit 1
-           }
-           echo "Checking moderate vulnerabilities (for information only)..."
-           npm audit --audit-level moderate || echo "Moderate vulnerabilities detected but continuing..."
-           echo "Security audit completed successfully"
+      - name: Run security audit
+        run: |
+          echo "Running security audit..."
+          npm audit --audit-level high || {
+            echo "High severity vulnerabilities found:"
+            npm audit --audit-level high
+            exit 1
+          }
+          echo "Checking moderate vulnerabilities (for information only)..."
+          npm audit --audit-level moderate || echo "Moderate vulnerabilities detected but continuing..."
+          echo "Security audit completed successfully"
 
   build:
     name: Build Docker Image
@@ -218,115 +218,112 @@ jobs:
     environment: production
 
     steps:
-       - name: Checkout code
-         uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-       - name: Deploy to production server
-         uses: appleboy/ssh-action@v1.0.3
-         with:
-           host: ${{ secrets.PRODUCTION_HOST }}
-           username: ${{ secrets.PRODUCTION_USERNAME }}
-           password: ${{ secrets.PRODUCTION_PASSWORD }}
-           script: |
-             cd /opt/badminton-bot
-             
-             # Pull latest code
-             git pull origin main
-             
-             # Use the fixed deployment script
-             chmod +x deploy-fixed.sh
-             ./deploy-fixed.sh
+      - name: Deploy to production server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.PRODUCTION_HOST }}
+          username: ${{ secrets.PRODUCTION_USERNAME }}
+          password: ${{ secrets.PRODUCTION_PASSWORD }}
+          script: |
+            cd /opt/badminton-bot
+            
+            # Pull latest code
+            git pull origin main
+            
+            # Use the fixed deployment script
+            chmod +x deploy-fixed.sh
+            ./deploy-fixed.sh
 
-       - name: Update version metadata
-         run: |
-           node scripts/update-version.js ${{ github.sha }} $(date -u +"%Y-%m-%dT%H:%M:%SZ") ${{ github.sha }}
+      - name: Update version metadata
+        run: |
+          node scripts/update-version.js ${{ github.sha }} $(date -u +"%Y-%m-%dT%H:%M:%SZ") ${{ github.sha }}
 
-       - name: Health check production
-         run: |
-           sleep 30
-           curl -f https://haominhnguyen.shop/health || echo "Health check failed, but continuing..."
-           curl -f https://haominhnguyen.shop/api/v1/version || echo "Version API check failed, but continuing..."
+      - name: Health check production
+        run: |
+          sleep 30
+          curl -f https://haominhnguyen.shop/health || echo "Health check failed, but continuing..."
+          curl -f https://haominhnguyen.shop/api/v1/version || echo "Version API check failed, but continuing..."
 
-       - name: Version check production
-         run: |
-           echo "🔍 Checking version information..."
-           sleep 10
-           
-           # Check version API
-           VERSION_RESPONSE=$(curl -s https://haominhnguyen.shop/api/v1/version || echo "{}")
-           echo "Version API Response: $VERSION_RESPONSE"
-           
-           # Extract version from response
-           VERSION=$(echo $VERSION_RESPONSE | jq -r '.data.version // "unknown"')
-           GIT_COMMIT=$(echo $VERSION_RESPONSE | jq -r '.data.gitCommit // "unknown"')
-           BUILD_TIME=$(echo $VERSION_RESPONSE | jq -r '.data.buildTime // "unknown"')
-           
-           echo "📊 Version Information:"
-           echo "  Version: $VERSION"
-           echo "  Git Commit: $GIT_COMMIT"
-           echo "  Build Time: $BUILD_TIME"
-           
-           # Verify deployment
-           if [ "$GIT_COMMIT" = "${{ github.sha }}" ] || [ "$GIT_COMMIT" = "unknown" ]; then
-             echo "✅ Version check passed"
-           else
-             echo "⚠️  Version check warning: Expected ${{ github.sha }}, got $GIT_COMMIT"
-           fi
+      - name: Version check production
+        run: |
+          echo "🔍 Checking version information..."
+          sleep 10
+          
+          VERSION_RESPONSE=$(curl -s https://haominhnguyen.shop/api/v1/version || echo "{}")
+          echo "Version API Response: $VERSION_RESPONSE"
+          
+          VERSION=$(echo $VERSION_RESPONSE | jq -r '.data.version // "unknown"')
+          GIT_COMMIT=$(echo $VERSION_RESPONSE | jq -r '.data.gitCommit // "unknown"')
+          BUILD_TIME=$(echo $VERSION_RESPONSE | jq -r '.data.buildTime // "unknown"')
+          
+          echo "📊 Version Information:"
+          echo "  Version: $VERSION"
+          echo "  Git Commit: $GIT_COMMIT"
+          echo "  Build Time: $BUILD_TIME"
+          
+          if [ "$GIT_COMMIT" = "${{ github.sha }}" ] || [ "$GIT_COMMIT" = "unknown" ]; then
+            echo "✅ Version check passed"
+          else
+            echo "⚠️ Version check warning: Expected ${{ github.sha }}, got $GIT_COMMIT"
+          fi
 
-       - name: Notify deployment success
-         if: success()
-         uses: dawidd6/action-send-mail@v3
-         continue-on-error: true
-         with:
-           server_address: smtp.gmail.com
-           server_port: 587
-           username: ${{ secrets.GMAIL_USERNAME }}
-           password: ${{ secrets.GMAIL_APP_PASSWORD }}
-           subject: "🚀 Badminton Bot Deployment Success"
-           to: haonmdotdev@gmail.com
-           from: ${{ secrets.GMAIL_USERNAME }}
-           body: |
-             🚀 Badminton Bot has been successfully deployed to production!
-             
-             📊 Deployment Details:
-             - Branch: ${{ github.ref }}
-             - Commit: ${{ github.sha }}
-             - Author: ${{ github.actor }}
-             - Time: ${{ github.event.head_commit.timestamp }}
-             
-             🔗 Access Points:
-             - Main App: https://haominhnguyen.shop
-             - Admin Panel: https://haominhnguyen.shop/admin.html
-             - API Docs: https://haominhnguyen.shop/api-docs
-             - Version API: https://haominhnguyen.shop/api/v1/version
-             
-             ✅ Version check completed successfully!
+      - name: Notify deployment success
+        if: success()
+        uses: dawidd6/action-send-mail@v3
+        continue-on-error: true
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.GMAIL_USERNAME }}
+          password: ${{ secrets.GMAIL_APP_PASSWORD }}
+          subject: "🚀 Badminton Bot Deployment Success"
+          to: haonmdotdev@gmail.com
+          from: ${{ secrets.GMAIL_USERNAME }}
+          body: |
+            🚀 Badminton Bot has been successfully deployed to production!
+            
+            📊 Deployment Details:
+            - Branch: ${{ github.ref }}
+            - Commit: ${{ github.sha }}
+            - Author: ${{ github.actor }}
+            - Time: ${{ github.event.head_commit.timestamp }}
+            
+            🔗 Access Points:
+            - Main App: https://haominhnguyen.shop
+            - Admin Panel: https://haominhnguyen.shop/admin.html
+            - API Docs: https://haominhnguyen.shop/api-docs
+            - Version API: https://haominhnguyen.shop/api/v1/version
+            
+            ✅ Version check completed successfully!
 
-       - name: Notify deployment failure
-         if: failure()
-         uses: dawidd6/action-send-mail@v3
-         continue-on-error: true
-         with:
-           server_address: smtp.gmail.com
-           server_port: 587
-           username: ${{ secrets.GMAIL_USERNAME }}
-           password: ${{ secrets.GMAIL_APP_PASSWORD }}
-           subject: "❌ Badminton Bot Deployment Failed"
-           to: haonmdotdev@gmail.com
-           from: ${{ secrets.GMAIL_USERNAME }}
-           body: |
-             Badminton Bot deployment has failed!
-             
-             Deployment Details:
-             - Branch: ${{ github.ref }}
-             - Commit: ${{ github.sha }}
-             - Author: ${{ github.actor }}
-             - Time: ${{ github.event.head_commit.timestamp }}
-             
-             🔍 Check GitHub Actions logs:
-             ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-             
-             📋 Common fixes:
-             - Check container status: docker ps
-             - Check logs: docker logs badminton-bot-prod
-             - Restart containers: docker-compose -f docker-compose.prod.yml restart
+      - name: Notify deployment failure
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        continue-on-error: true
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.GMAIL_USERNAME }}
+          password: ${{ secrets.GMAIL_APP_PASSWORD }}
+          subject: "❌ Badminton Bot Deployment Failed"
+          to: haonmdotdev@gmail.com
+          from: ${{ secrets.GMAIL_USERNAME }}
+          body: |
+            Badminton Bot deployment has failed!
+            
+            Deployment Details:
+            - Branch: ${{ github.ref }}
+            - Commit: ${{ github.sha }}
+            - Author: ${{ github.actor }}
+            - Time: ${{ github.event.head_commit.timestamp }}
+            
+            🔍 Check GitHub Actions logs:
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            
+            📋 Common fixes:
+            - Check container status: docker ps
+            - Check logs: docker logs badminton-bot-prod
+            - Restart containers: doc
