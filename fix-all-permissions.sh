@@ -111,7 +111,7 @@ POSTGRES_PASSWORD=badminton_secure_password_123
 DATABASE_URL=postgresql://badminton_user:badminton_secure_password_123@postgres:5432/badminton_bot?schema=public
 NODE_ENV=production
 PORT=3100
-API_PORT=3101
+API_PORT=3100
 API_BASE_URL=https://haominhnguyen.shop/api
 FRONTEND_URL=https://haominhnguyen.shop
 BOT_TOKEN=your_bot_token_here

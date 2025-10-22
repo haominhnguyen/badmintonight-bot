@@ -10,7 +10,7 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('../src/swagger');
 
 const app = express();
-const PORT = 3101;
+const PORT = 3100;
 
 // Middleware
 app.use(express.json());

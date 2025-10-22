@@ -232,7 +232,7 @@ process.on('SIGINT', () => {
   process.exit(0);
 });
 
-const PORT = process.env.API_PORT || 3101;
+const PORT = process.env.API_PORT || 3100;
 
 app.listen(PORT, () => {
   console.log(`🚀 API Server running on port ${PORT}`);

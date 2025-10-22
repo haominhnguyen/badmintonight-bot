@@ -13,7 +13,7 @@ docker build -t badminton-bot-test .
 
 # Test if the image can start (without database)
 echo "🧪 Testing image startup..."
-docker run --rm -d --name badminton-test -p 3101:3100 badminton-bot-test
+docker run --rm -d --name badminton-test -p 3100:3100 badminton-bot-test
 
 # Wait a moment
 sleep 5
@@ -21,8 +21,8 @@ sleep 5
 # Check if container is still running
 if docker ps | grep -q "badminton-test"; then
     echo "✅ Docker image built and started successfully!"
-    echo "🌐 Test server running on: http://localhost:3101"
-    echo "📚 Swagger docs: http://localhost:3101/api-docs"
+    echo "🌐 Test server running on: http://localhost:3100"
+    echo "📚 Swagger docs: http://localhost:3100/api-docs"
     
     # Show container logs
     echo "📋 Container logs:"

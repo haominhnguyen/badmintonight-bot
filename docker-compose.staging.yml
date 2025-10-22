@@ -26,14 +26,14 @@ services:
     environment:
       DATABASE_URL: "postgresql://badminton_user:${POSTGRES_PASSWORD}@postgres:5432/badminton_bot_staging?schema=public"
       NODE_ENV: staging
-      PORT: 3101
+      PORT: 3100
       COURT_PRICE: ${COURT_PRICE:-120000}
       SHUTTLE_PRICE: ${SHUTTLE_PRICE:-25000}
       FEMALE_PRICE: ${FEMALE_PRICE:-40000}
     env_file:
       - .env
     ports:
-      - "127.0.0.1:3101:3101"
+      - "127.0.0.1:3100:3100"
     depends_on:
       postgres:
         condition: service_healthy
@@ -41,7 +41,7 @@ services:
       - ./logs:/app/logs
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3101/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"]
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3100/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"]
       interval: 30s
       timeout: 10s
       retries: 3
