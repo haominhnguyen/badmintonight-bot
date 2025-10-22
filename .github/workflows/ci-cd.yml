@@ -224,41 +224,9 @@ jobs:
              # Pull latest code
              git pull origin main
              
-             # Create necessary directories
-             mkdir -p nginx logs/nginx
-             
-             # Copy nginx config if needed
-             if [ ! -f "nginx/nginx.conf" ] && [ -f "nginx.conf" ]; then
-               cp nginx.conf nginx/nginx.conf
-             fi
-             
-             # Make scripts executable
-             chmod +x *.sh
-             chmod +x scripts/*.sh
-             
-             # Stop existing containers
-             docker-compose -f docker-compose.prod.yml down || true
-             
-             # Remove old nginx container
-             docker rm -f badminton-nginx || true
-             
-             # Start services with production configuration
-             docker-compose -f docker-compose.prod.yml up -d
-             
-             # Wait for services to start
-             sleep 30
-             
-             # Run database migrations
-             docker exec badminton-bot-prod npx prisma migrate deploy || echo "Migration failed, but continuing..."
-             
-             # Test API endpoints
-             echo "Testing API endpoints..."
-             curl -f http://localhost:3100/health || echo "App health check failed"
-             curl -f http://localhost/api/v1/version || echo "API version check failed"
-             curl -f http://localhost/api-docs || echo "API docs check failed"
-             
-             # Show container status
-             docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+             # Use the fixed deployment script
+             chmod +x deploy-fixed.sh
+             ./deploy-fixed.sh
 
        - name: Update version metadata
          run: |
